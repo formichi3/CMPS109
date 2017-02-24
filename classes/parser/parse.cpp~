@@ -9,7 +9,6 @@ int main(int argc, char* argv[]){
   string check = "aaaaa";
   int testing;
   testing=check.find("a",0);
-
  cout<<"test"<<testing<<endl;
 
     cout<< "enter a command...-1 to exit"<<endl;
