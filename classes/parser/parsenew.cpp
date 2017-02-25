@@ -1,14 +1,21 @@
+#include "RBImp.cpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <utility>
+#include <unordered_map>
 
 using namespace std;
 
 class parse{
 
 public:
+
+    RB ruleBase;
+
+
    void checkLine(string input){
     inputSize=input.size();
     cout<<"parsing input"<<endl;
