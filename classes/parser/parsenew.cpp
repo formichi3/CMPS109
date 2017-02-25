@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -32,19 +34,30 @@ public:
     if(oper=="or"||oper=="OR")operand=0;
     else operand=1;
     cout<<"operand "<<operand<<endl;
+    int cursor=preop+1;
+    int endparam;
+    string parameter;
+    vector<pair <string,vector <char> > > rules;
+    vector<pair <string,vector <char> > > facts;
+	
+	  int start1 = input.find(" " , cursor);
+	  int end1 =  input.find("(" , cursor);
+	  string name = input.substr(start1+1,(end1-start1-1));
+	  string token;
+	  cout<<"name: "<< name<<endl;
+	  cursor=end1;
+	  endparam=input.find(")",cursor);
+	  cout<<"endparam:" <<endparam<<endl;	
+  
+//	  while(cursor<endparam){
 
-
-
-    int start1 = input.find(" " , postop);
-    int end1 = input.find("(" ,start1+1);
-    int start2 = input.find(" " , end1);
-    int end2 = input.find("\n",start2);
-
-    // string param1=input.substr(start+1,(comma-start-1));
-    //    string param2=input.substr(comma+1,end-comma-1);
-    cout<<"param1 "<< param1 <<endl;
-    cout<<"param2 "<<param2<<endl;
-
+	  token=input.substr(cursor, endparam);
+	  cout<<"testing token "<<token<<endl;
+	    end1=input.find(",",cursor);
+	    parameter = input.substr(cursor+1,end1-cursor-1);
+	    cout<<"parameter: "<<parameter<<endl;
+	    cursor=end1+1;
+	    //}    
 
 }
 
