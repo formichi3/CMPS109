@@ -15,6 +15,7 @@ int main(int argc, char* argv[]){
     cout<< "enter a command...-1 to exit"<<endl;
     string input;
     while(getline(cin,input)&&input!="-1"){
+      int inputSize=input.size();
       cout<<"parsing input"<<endl;      
       string command = input.substr(0,4);//sets string equal to first 4 letters
       
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]){
 	string param2=input.substr(comma+1,end-comma-1);
 	cout<<"param1 "<< param1 <<endl;
 	cout<<"param2 "<<param2<<endl;
-      }//end of rule parsing
+      }//end of fact parsing
       
 
       else if(command=="DUMP")cout<<"do dump stuff"<<endl;
@@ -51,11 +52,23 @@ int main(int argc, char* argv[]){
       else if(command=="INFE"){
 cout<<"do inference stuff"<<endl;
 
- int space = input.find(" " , 0);
- int end = input.find("(" , 0);
- string query=input.substr(space+1,(end-space-1));
+ int inferSpace = input.find(" " , 0);
+ int brace = input.find("(" , 0);
+ string query=input.substr(inferSpace+1,(brace-inferSpace-1));
  cout<<"inference "<<query<<endl;
+ int end=input.find(")" , 0);
+ if(end+1<inputSize){
+   int space2=input.find(" ",end);
+   int end2=input.find(" ",space2+1);
+ cout<<"space2 value "<<space2<<" end2 value " <<end2<<endl;
+   if(end2==-1){
+end2=input.find("\n",space2);
 
+ cout<<"used newline char"<<endl;
+   }
+   string query2=input.substr(space2+1,end2-space2-1);
+   cout<<"query2  ("<<query2<<")"<<endl;
+ } 
 }
 
       else cout<<"please enter valid command"<<endl;
