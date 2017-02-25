@@ -41,9 +41,15 @@ int main(){
   arg4.push_back("$Z");
   arg4.push_back("$Y");
 
+  vector< string > arg5;
+  arg5.push_back("dog");
+  arg5.push_back("$Z");
+  arg5.push_back("$Y");
+
 
   facts.push_back(arg3);
   facts.push_back(arg4);
+  facts.push_back(arg5);
 
   vector< string > args;
   args.push_back("$X");
