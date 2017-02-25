@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include "../rule/Rule_H.h"
 
 using namespace std;
 
@@ -8,23 +9,14 @@ using namespace std;
 #define RB_H
 
 
-class rule{
-
-public:
-       rule();
-       rule(string p_name);
-       ~rule();
-       string name;
-       bool logOperator; //0=OR, 1=AND
-};
-
-class RB : public Moderator{
+class RB{
 public:
        RB();
        ~RB();
+       void add(rule p_item);
+       void drop(string p_name);
+       void print();
        unordered_map<string, rule> hash;
-
-private:
 
 };
 
