@@ -67,7 +67,9 @@ int main(){
   cout << "rule base size: " << myRB.hash.size();
   //myRB.print();
 
-  myRule.print2();
+  myRB.print2();
+
+  //myRule.print();
 
 
 

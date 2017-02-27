@@ -18,6 +18,34 @@ rule::rule(string p_name, vector < string > p_args, int p_Operator, vector < vec
 }
 rule::~rule(){
 }
+
 void rule::print(){
-  cout << name << endl;
+  cout << endl << name << "(";
+  for ( auto it  = args.begin(); it != args.end(); it++){
+    cout << *it;
+  }
+  cout << "):- ";
+
+  if(logOperator){
+    cout << "AND ";
+  }
+  else{
+    cout << "OR ";
+  }
+
+  int index = 0;
+  for ( auto it  = facts.begin(); it != facts.end(); it++){
+      auto it2 = it->begin();
+      for ( auto it2 = it->begin(); it2 != it->end(); it2++){
+        if (it2 == it->begin()){
+          cout << *it2 << "(";
+        }
+        else{
+          cout << *it2;
+        }
+      }
+      cout << ")";
+  }
+
+
 }

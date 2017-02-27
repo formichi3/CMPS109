@@ -16,6 +16,7 @@ public:
        void add(rule p_item);
        void drop(string p_name);
        void print();
+       void print2();
        unordered_map<string, rule> hash;
 
 };
