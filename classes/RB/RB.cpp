@@ -57,12 +57,17 @@ int main(){
 
   rule myRule("MyRule", args, 1, rules, facts);
   rule myRule2("MyRule2", args, 1, rules, facts);
+  rule myRule3("MyRule3", args, 1, rules, facts);
 
   myRB.add(myRule);
   myRB.add(myRule2);
+  myRB.add(myRule3);
+
 
   cout << "rule base size: " << myRB.hash.size();
-  myRB.print();
+  //myRB.print();
+
+  myRule.print2();
 
 
 
