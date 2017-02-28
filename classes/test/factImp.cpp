@@ -1,0 +1,11 @@
+#include "Fact_H.h"
+
+fact::fact(){
+  name = "";
+}
+fact::fact(string p_name, vector <string> p_paramaters){
+  name = p_name;
+  paramaters = p_paramaters;
+}
+fact::~fact(){
+}
