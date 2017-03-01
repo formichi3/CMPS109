@@ -14,7 +14,7 @@ int main(){
   RB myRB;
 
 
-  vector< vector < string > > rules;
+  vector< vector < string > > preds;
 
   vector< string > arg1;
   arg1.push_back("father");
@@ -26,10 +26,9 @@ int main(){
   arg2.push_back("$Z");
   arg2.push_back("$Y");
 
-  rules.push_back(arg1);
-  rules.push_back(arg2);
+  preds.push_back(arg1);
+  preds.push_back(arg2);
 
-  vector< vector < string > > facts;
 
   vector< string > arg3;
   arg3.push_back("brother");
@@ -45,47 +44,37 @@ int main(){
   arg5.push_back("dog");
   arg5.push_back("$Z");
   arg5.push_back("$Y");
+  arg5.push_back("$Z");
 
 
-  facts.push_back(arg3);
-  facts.push_back(arg4);
-  facts.push_back(arg5);
+  preds.push_back(arg3);
+  preds.push_back(arg4);
+  preds.push_back(arg5);
 
   vector< string > args;
   args.push_back("$X");
   args.push_back("$Y");
 
-  rule myRule("MyRule", args, 1, rules, facts);
-  rule myRule2("MyRule2", args, 1, rules, facts);
-  rule myRule3("MyRule3", args, 1, rules, facts);
+
+  rule myRule("MyRule", args, 1, preds);
+  rule myRule2("MyRule2", args, 1, preds);
+  rule myRule3("MyRule3", args, 1, preds);
 
   myRB.add(myRule);
   myRB.add(myRule2);
   myRB.add(myRule3);
 
 
-  cout << "rule base size: " << myRB.hash.size();
+
+  rule myRule4("MyRule3", args, 1, preds);
+
+  cout << "rule base size: " << myRB.hash.size() << endl;
   //myRB.print();
 
-  myRB.dump();
-
-  vector< string > arg6;
-  arg6.push_back("cat");
-  arg6.push_back("$Z");
-  arg6.push_back("$Y");
-
-  facts.push_back(arg6);
-
-  rule myRule4("MyRule4", args, 0, rules, facts);
   myRB.add(myRule4);
-
-  cout << "\nrule base size: " << myRB.hash.size();
-  myRB.dump();
-
-  myRB.drop(myRule4.name);
+  cout << "rule base size: " << myRB.hash.size() << endl;
 
   myRB.dump();
-
 
 
 

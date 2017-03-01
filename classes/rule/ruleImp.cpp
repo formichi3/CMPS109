@@ -6,12 +6,11 @@ rule::rule(){
   name = "";
   logOperator = 0;
 }
-rule::rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_rules, vector < vector < string > > p_facts ){
+rule::rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_preds){
   name = p_name;
   args = p_args;
   logOperator = p_Operator;
-  rules = p_rules;
-  facts = p_facts;
+  predicates = p_preds;
 }
 rule::~rule(){
 }
@@ -31,7 +30,7 @@ void rule::print(){
   }
 
   int index = 0;
-  for ( auto it  = facts.begin(); it != facts.end(); it++){
+  for ( auto it  = predicates.begin(); it != predicates.end(); it++){
       auto it2 = it->begin();
       for ( auto it2 = it->begin(); it2 != it->end(); it2++){
         if (it2 == it->begin()){
