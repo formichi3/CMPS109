@@ -13,15 +13,14 @@ public:
 
        //constructors & destructors
        rule();
-       rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_rules, vector < vector < string > > p_facts );
+       rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_preds);
        ~rule();
 
        string name; //name of rule
        int logOperator; //0=OR, 1=AND
        vector < string > args; //args to be returned when inferred
-       vector < vector < string > > rules;
-       vector < vector < string > > facts;
-
+       vector < vector < string > > predicates;
+       
        void print();
 };
 
