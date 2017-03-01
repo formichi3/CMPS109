@@ -165,11 +165,14 @@ void parse::infer(string input){      //working
   string parameter; // parameter holds the current parameter
   int base=1;
   int tail;
+  int c = 0;
   while(base<token.length()){
     tail=token.find(",",base);
     if(tail==-1)tail=token.find(")",base);
     parameter = token.substr(base,tail-base);
-    cout<<"parameter: "<<parameter<<endl;
+    params.push_back(parameter);
+    cout<<"parameter: "<<parameter<<" & params "<<params[c]<<endl;
+    c++;
     base=tail+1;
   }
   
@@ -182,8 +185,21 @@ void parse::infer(string input){      //working
     string query2=input.substr(space2+1,end2-space2-1);
     cout<<"query2  ("<<query2<<")"<<endl;
   }
-
+  // get rule being inferenced
+  inferRule(curRB.hash[query]);
 }
+
+void parse::inferRule(rule iRule) {
+   
+   // if the predicate is a fact 
+   if (curRB.find(iRule.predicate) == hash.end) {
+      // call inferFact, passing that fact name
+      inferFact (curKB.hash[predicate]);
+   } else {
+      inferRule (curRB.hash[predicate]);
+   }
+}
+
 
 void parse::drop(string input){
   int space=input.find(" ",0);
