@@ -12,7 +12,7 @@ void parse::checkLine(string input){
   
   if(command=="RULE"||command=="rule")rule(input);//cout<<"do rule stuff"<<endl;
   else if(command=="FACT"||command=="fact")addFact(input);
-  else if(command=="DUMP"||command=="dump")cout<<"do dump stuff"<<endl;
+  else if(command=="DUMP"||command=="dump")dump(input);
   else if(command=="LOAD"||command=="load")load(input);
   else if(command=="DROP"||command=="drop")drop(input);
   else if(command=="INFE"||command=="infe")infer(input);
@@ -58,8 +58,6 @@ void parse::rule(string input){//working
   cout<<"operand "<<operand<<endl;//insert operator
   int cursor=preop+1;
   
-  
-  
   int start1;
   string name;
   while(cursor<input.length()){	//continue while predicates remain
@@ -88,13 +86,10 @@ void parse::rule(string input){//working
   }
 }
 
-
-
 void parse::addFact(string input){//working
-  KB cur2KB;
 
   int space = input.find(" " , 0);
-  int endfact = input.find(" " , space+1);
+  int endfact = input.find("(" , space+1);
   string factName=input.substr(space+1,(endfact-space-1));
   cout<<"fact: "<<factName<<endl;//insert fact name
   
@@ -119,12 +114,23 @@ void parse::addFact(string input){//working
     base=tail+1;
   }
   // create fact obj
-  // fact curFact();
   fact curFact(factName, params); // takes name then paramater vector as it's paramaters
   // add fact to KB
   curKB.add(curFact);
   curKB.print();
 }
+
+void parse::dump(string input){
+   cout<<"do dump stuff"<<endl;
+   int space = input.find(" " , 0);
+   int endfile = input.find("\n" , 0);
+   string filename=input.substr(space+1,(endfile-space-1));
+   ofstream file;
+   file.open(filename);
+   //file<<curKB.print;
+   file.close();
+}
+
 
 void parse::load(string input){//working, opens file and reads it line by line      
   cout<<"do load stuff"<<endl;
@@ -138,7 +144,6 @@ void parse::load(string input){//working, opens file and reads it line by line
   string line;
     while (std::getline(infile, line))
       {
-	
 	cout<<endl<<line<<endl; // Process str                              
 	checkLine(line); 
       }
@@ -183,6 +188,7 @@ void parse::drop(string input){
   
   string name=input.substr(space+1,end-space-1);
   cout<<"name: "<<name<<endl;
+  curKB.drop(name);
 }
 
 int main(){
