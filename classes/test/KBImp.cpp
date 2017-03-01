@@ -2,27 +2,29 @@
 #include <iostream>
 
 
-/*KB::KB(fact){
-  cout << "\ncreating data base\n" << endl;
-}
-KB::~KB(){
-  cout << "\ndestroying data base\n" << endl;
-}*/
 void KB::add(fact p_fact){
   pair<string, fact> p_insert (p_fact.name, p_fact);
   this->hash.insert (p_insert);
 }
 
-void KB::print(){
-  cout << "Facts:" << endl;
+string KB::print(bool out){
+  string file;
   for ( auto it = hash.begin(); it != hash.end(); ++it){
-    cout << it->first << " ";
+    if (out) cout << "fact " << it->first << " ";
+    file += "fact ";
+    file += it->first;
+    file += "(";
     for (int i = 0; i<it->second.paramaters.size(); ++i) {
-      cout << it->second.paramaters[i] << " ";
+      if (out) cout << it->second.paramaters[i] << " ";
+      file+=it->second.paramaters[i];
+      if (i != it->second.paramaters.size()-1) file+=",";
     }
-    cout << endl;
+    if (out) cout << endl;
+    file+=")\n";
   }
-  cout << endl;
+  if (out) cout << endl;
+  file+="\n";
+  return file;
 }
 
 void KB::drop(string p_name){

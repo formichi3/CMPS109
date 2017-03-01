@@ -117,7 +117,7 @@ void parse::addFact(string input){//working
   fact curFact(factName, params); // takes name then paramater vector as it's paramaters
   // add fact to KB
   curKB.add(curFact);
-  curKB.print();
+  curKB.print(true);
 }
 
 void parse::dump(string input){
@@ -127,10 +127,10 @@ void parse::dump(string input){
    string filename=input.substr(space+1,(endfile-space-1));
    ofstream file;
    file.open(filename);
-   //file<<curKB.print;
+   string f = curKB.print(false);
+   file << f;
    file.close();
 }
-
 
 void parse::load(string input){//working, opens file and reads it line by line      
   cout<<"do load stuff"<<endl;

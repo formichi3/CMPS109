@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include "../fact/Fact_H.h"
+#include "Fact_H.h"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ public:
        //~KB();
        void add(fact p_item);
        void drop(string p_name);
-       void print();
+       string print(bool out);
        unordered_map<string, fact> hash;
 
 };
