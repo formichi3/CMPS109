@@ -67,9 +67,24 @@ int main(){
   cout << "rule base size: " << myRB.hash.size();
   //myRB.print();
 
-  myRB.print2();
+  myRB.dump();
 
-  //myRule.print();
+  vector< string > arg6;
+  arg6.push_back("cat");
+  arg6.push_back("$Z");
+  arg6.push_back("$Y");
+
+  facts.push_back(arg6);
+
+  rule myRule4("MyRule4", args, 0, rules, facts);
+  myRB.add(myRule4);
+
+  cout << "\nrule base size: " << myRB.hash.size();
+  myRB.dump();
+
+  myRB.drop(myRule4.name);
+
+  myRB.dump();
 
 
 

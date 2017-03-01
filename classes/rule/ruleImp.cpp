@@ -6,9 +6,6 @@ rule::rule(){
   name = "";
   logOperator = 0;
 }
-rule::rule(string p_name){
-  this->name = p_name;
-}
 rule::rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_rules, vector < vector < string > > p_facts ){
   name = p_name;
   args = p_args;
@@ -26,7 +23,7 @@ void rule::print(){
   }
   cout << "):- ";
 
-  if(logOperator){
+  if(logOperator == 1){
     cout << "AND ";
   }
   else{
