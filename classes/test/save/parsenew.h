@@ -29,8 +29,7 @@ class parse{
   void dump(string x);
   void infer(string x);
   void drop(string x);
-  void inferFact(fact p_fact);
-  void inferRule(rule p_rule);
+
 };
 
 #endif

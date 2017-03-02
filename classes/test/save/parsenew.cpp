@@ -204,30 +204,20 @@ void parse::infer(string input){      //working
   for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
      //curRB.hash.find(query)->second.print();
      it->print();
-     inferRule(*it);
+     //inferRule(it);
   }
 }
 
+/*
 void parse::inferRule(rule p_rule){
-   string name;
-   for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      name = *it->begin();
-      cout << name <<endl;
+   for (int i=0; i<p_rule.args.size(); i++){ 
+      p_rule.args[i]
    }
 }
-/*    string name;
-    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      name = *it->begin();
-      cout << name << endl;
-    }
-}*/
 
 void parse::inferFact(fact p_fact){
-
-
-
 }
-
+*/
 
 void parse::drop(string input){
   int space=input.find(" ",0);
