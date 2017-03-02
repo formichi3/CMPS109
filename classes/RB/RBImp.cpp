@@ -16,18 +16,19 @@ void RB::add(rule p_rule){
   this->hash.insert (p_insert);
 }
 
-void RB::dump(string fileName){
-  ofstream myFile(fileName);
+string RB::dump(){
+  string allRules;
   vector <string> rules;
   for (auto it = this->hash.begin(); it != this->hash.end(); it++){
     rules.push_back(it->second.createString());
     //it->second.print();
   }
   for (auto it = rules.begin(); it != rules.end(); it++){
-    myFile << "RULE " << *it << "\n";
+    allRules += "RULE " + *it + "\n";
     cout << *it << endl;
   }
 
+  return allRules;
 }
 void RB::drop(string p_name){
   this->hash.erase(p_name);

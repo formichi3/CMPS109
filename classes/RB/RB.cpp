@@ -76,7 +76,8 @@ int main(){
 
   //vector <rule> matching = myRB.traversRule(myRule3.name);
 
-  myRB.dump("test.txt");
+  string dumpTest = myRB.dump();
+  cout << endl << endl << endl << dumpTest;
 
 
 
