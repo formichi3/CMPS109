@@ -97,8 +97,7 @@ void parse::addRule(string input){//working
   // make rule object
   rule curRule(factName, params, operand, predParams);
   curRB.add(curRule);
-  curRB.dump();
-
+  //curRB.dump();
 }
 
 void parse::addFact(string input){//working
@@ -132,12 +131,11 @@ void parse::addFact(string input){//working
   fact curFact(factName, params); // takes name then paramater vector as it's paramaters
   // add fact to KB
   curKB.add(curFact);
-  curKB.print(true);
-  cout << curKB.hash.bucket(factName) << endl;
+  //curKB.print(true);
+  //cout << curKB.hash.bucket(factName) << endl;
 }
 
 void parse::dump(string input){
-   //cout<<"do dump stuff"<<endl;
    int space = input.find(" " , 0);
    int endfile = input.find("\n" , 0);
    string filename=input.substr(space+1,(endfile-space-1));
@@ -145,12 +143,13 @@ void parse::dump(string input){
    file.open(filename);
    string f = curKB.print(false);
    file << f;
+   string r = curRB.dump();
+   file << r;
    cout<<"File "<<filename<<" created"<<endl;
    file.close();
 }
 
 void parse::load(string input){//working, opens file and reads it line by line      
-  //cout<<"do load stuff"<<endl;
   int space = input.find(" " , 0);
   int endfile = input.find("\n" , 0);
   string filename=input.substr(space+1,(endfile-space-1));
@@ -208,15 +207,13 @@ void parse::infer(string input){      //working
      //inferRule(it);
   }
 }
-/*
-void parse::inferRule(rule p_rule){
-   for (int i=0; i<p_rule.args.size(); i++){ 
-      p_rule.args[i]
-   }
+
+/*void parse::inferRule(rule p_rule){
+}
 
 void parse::inferFact(fact p_fact){
-}
-*/
+}*/
+
 
 void parse::drop(string input){
   int space=input.find(" ",0);
