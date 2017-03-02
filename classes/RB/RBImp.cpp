@@ -23,10 +23,14 @@ void RB::dump(){
 void RB::drop(string p_name){
   this->hash.erase(p_name);
 }
-void RB::traversRule(string p_name){
+vector<rule> RB::traversRule(string p_name){
   auto range = hash.equal_range(p_name);
+  vector <rule> matchingRules;
+  cout << "Matching rules: " << endl;
   for (auto x = range.first; x != range.second; x++){
     x->second.print();
+    matchingRules.push_back(x->second);
   }
   cout << endl;
+  return matchingRules;
 }
