@@ -74,7 +74,7 @@ int main(){
   myRB.add(myRule4);
   cout << "rule base size: " << myRB.hash.size() << endl;
 
-  myRB.dump();
+  myRB.traversRule(myRule3.name);
 
 
 

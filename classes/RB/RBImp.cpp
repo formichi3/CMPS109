@@ -1,5 +1,6 @@
 #include "RB_H.h"
 #include <iostream>
+#include <typeinfo>
 
 
 RB::RB(){
@@ -21,4 +22,11 @@ void RB::dump(){
 }
 void RB::drop(string p_name){
   this->hash.erase(p_name);
+}
+void RB::traversRule(string p_name){
+  auto range = hash.equal_range(p_name);
+  for (auto x = range.first; x != range.second; x++){
+    x->second.print();
+  }
+  cout << endl;
 }
