@@ -74,7 +74,9 @@ int main(){
   myRB.add(myRule4);
   cout << "rule base size: " << myRB.hash.size() << endl;
 
-  vector <rule> matching = myRB.traversRule(myRule3.name);
+  //vector <rule> matching = myRB.traversRule(myRule3.name);
+
+  myRB.dump("test.txt");
 
 
 

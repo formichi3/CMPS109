@@ -42,6 +42,35 @@ void rule::print(){
       }
       cout << ")";
   }
+}
 
+string rule::createString(){
+  string ruleString = name + "(";
+  for ( auto it  = args.begin(); it != args.end(); it++){
+    ruleString = ruleString + *it + ",";
+  }
+  ruleString.pop_back();
+  ruleString = ruleString + "):- ";
+  if(logOperator == 1){
+    ruleString = ruleString + "AND";
+  }
+  else{
+    ruleString = ruleString + "OR";
+  }
 
+  int index = 0;
+  for ( auto it  = predicates.begin(); it != predicates.end(); it++){
+      auto it2 = it->begin();
+      for ( auto it2 = it->begin(); it2 != it->end(); it2++){
+        if (it2 == it->begin()){
+          ruleString = ruleString + " " + *it2 + "(";
+        }
+        else{
+          ruleString = ruleString + *it2 + ",";
+        }
+      }
+      ruleString.pop_back();
+      ruleString = ruleString + ")";
+  }
+  return ruleString;
 }

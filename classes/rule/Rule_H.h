@@ -19,6 +19,7 @@ public:
        int logOperator; //0=OR, 1=AND
        vector < string > args; //args to be returned when inferred
        vector < vector < string > > predicates;
+       string createString();
 
        void print();
 };

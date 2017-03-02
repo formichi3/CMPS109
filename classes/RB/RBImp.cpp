@@ -1,6 +1,7 @@
 #include "RB_H.h"
 #include <iostream>
 #include <typeinfo>
+#include <fstream>
 
 
 RB::RB(){
@@ -15,10 +16,18 @@ void RB::add(rule p_rule){
   this->hash.insert (p_insert);
 }
 
-void RB::dump(){
+void RB::dump(string fileName){
+  ofstream myFile(fileName);
+  vector <string> rules;
   for (auto it = this->hash.begin(); it != this->hash.end(); it++){
-    it->second.print();
+    rules.push_back(it->second.createString());
+    //it->second.print();
   }
+  for (auto it = rules.begin(); it != rules.end(); it++){
+    myFile << "RULE " << *it << "\n";
+    cout << *it << endl;
+  }
+
 }
 void RB::drop(string p_name){
   this->hash.erase(p_name);
