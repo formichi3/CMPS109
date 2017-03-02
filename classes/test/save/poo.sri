@@ -1,0 +1,6 @@
+FACT in2(1,2,3)
+FACT in3(4,5,6)
+FACT in(a,b,c)
+FACT in(1,2,3)
+
+RULE out(x,y):- OR in(x,y) in2(x,y)

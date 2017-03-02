@@ -198,7 +198,8 @@ void parse::infer(string input){      //working
     string query2=input.substr(space2+1,end2-space2-1);
     cout<<"query2  ("<<query2<<")"<<endl;
   }
-
+  //getFacts(query);
+  
   vector <rule> rules_to_be_inferred;
   rules_to_be_inferred = curRB.traversRule(query);
   for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
@@ -208,42 +209,78 @@ void parse::infer(string input){      //working
   }
 }
 
-void parse::inferRule(rule p_rule){
-<<<<<<< HEAD
-    string name;
-    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      name = *it->begin();
-      cout << name << endl;
+/*vector < vector <string> > parse::getFacts(string p_name){
+  vector < vector <string> > masterList;
+  auto pred = curRB.hash.equal_range(p_name);
+  if (pred.first != pred.second){
+    cout << "if one"<<endl;
+    for (auto it = pred.first; it != pred.second; it++){
+      cout << typeid((*it).first).name() << endl;
+      auto list = getFacts((*it).first);
+      masterList.insert(masterList.end(), list.begin(), list.end());
     }
-}
+    return masterList;
+  }
+  cout <<"we got here!"<<endl;
+  auto pred2 = curKB.hash.equal_range(p_name);
+  if (pred.first != pred.second){
+    vector < vector <string> > facts;
+    for (auto it = pred.first; it != pred.second; it++){
+        //facts.push_back((*it).second.predicates);
+        cout << typeid((*it).second.predicates).name() << endl;
 
-// void parse::inferFact(fact p_fact){
-// }
-=======
+    }
+  //   return facts;
+  // }
+  // else{
+  //   cout << "INVALID RULES AND FACTS" << endl;
+  }
+
+  //return null;
+}*/
+
+
+void parse::inferRule(rule p_rule){
+   cout << p_rule.name<<endl;
    string name;
+   // auto R = *(curRB.find(p_ruleName));
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
       name = *it->begin();
-      cout << name <<endl;
+      //cout << name <<endl;
       if (curKB.hash.find(name) != curKB.hash.end()) {
-	 inferFact(*it, p_rule.logOperator);
+	 inferFact(*it->begin());
       }
       else if (curRB.hash.find(name) != curRB.hash.end()) {
-	 inferRule(*it);
+	 auto R = *(curRB.hash.find(name));
+	 inferRule(R.second);
       } 
       else {
-	 cout<<"Rule "<<p_rule<<" invalid predicate "<<name<<endl; 
+	 cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl; 
       }
    }
 }
 
-void parse::inferFact(fact p_fact, int operand){
-   if (operand==0) {   
-      // OR op shit
-   } else {
-      // AND op shit
+void parse::inferFact(string p_factName){
+   vector< vector <string> > relations;
+
+   cout << p_factName <<endl;
+   auto range = curKB.hash.equal_range(p_factName);
+   for (auto x = range.first; x!=range.second; x++){
+     vector <string> args;
+     for( auto y = x->second.paramaters.begin(); y != x->second.paramaters.end(); y++){
+       args.push_back(*y);
+     }
+     relations.push_back(args);
+     args.clear();
+   }
+   for (auto it = relations.begin(); it != relations.end(); it++){
+      cout << endl;
+      for (auto it2 = it->begin(); it2 != it->end(); it2++){
+	 cout << *it2 << " " << endl;
+      }
    }
 }
->>>>>>> c91b13df3d864390c34d4f7691f5ae0cf753837f
+
 
 
 void parse::drop(string input){

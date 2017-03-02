@@ -12,6 +12,7 @@
 #include <utility>
 #include <iostream>
 #include <string>
+#include <typeinfo>
 
 using namespace std;
 class parse{
@@ -29,7 +30,9 @@ class parse{
   void dump(string x);
   void infer(string x);
   void drop(string x);
-
+  void inferFact(string p_factName);
+  void inferRule(rule p_ruleName);
+  //vector <vector<string>> getFacts(string p_name);
 };
 
 #endif

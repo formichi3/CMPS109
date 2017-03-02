@@ -43,3 +43,6 @@ void KB::drop(string p_name/*, fact p_fact*/){
   }*/
   this->hash.erase(p_name);
 }
+
+
+
