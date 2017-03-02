@@ -213,19 +213,24 @@ void parse::inferRule(rule p_rule){
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
       name = *it->begin();
       cout << name <<endl;
+      if (curKB.hash.find(name) != curKB.hash.end()) {
+	 inferFact(*it, p_rule.logOperator);
+      }
+      else if (curRB.hash.find(name) != curRB.hash.end()) {
+	 inferRule(*it);
+      } 
+      else {
+	 cout<<"Rule "<<p_rule<<" invalid predicate "<<name<<endl; 
+      }
    }
 }
-/*    string name;
-    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      name = *it->begin();
-      cout << name << endl;
-    }
-}*/
 
-void parse::inferFact(fact p_fact){
-
-
-
+void parse::inferFact(fact p_fact, int operand){
+   if (operand==0) {   
+      // OR op shit
+   } else {
+      // AND op shit
+   }
 }
 
 
