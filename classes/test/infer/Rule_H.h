@@ -1,5 +1,6 @@
 #include <iostream>
 #include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -9,12 +10,18 @@ using namespace std;
 class rule{
 
 public:
+
+       //constructors & destructors
        rule();
-       rule(string p_name);
+       rule(string p_name, vector < string > p_args, int p_Operator, vector < vector < string > > p_preds);
        ~rule();
-       string name;
-       bool logOperator; //0=OR, 1=AND
-       vector < pair < string, vector < char > > > predicates;
+
+       string name; //name of rule
+       int logOperator; //0=OR, 1=AND
+       vector < string > args; //args to be returned when inferred
+       vector < vector < string > > predicates;
+       
+       string print();
 };
 
 

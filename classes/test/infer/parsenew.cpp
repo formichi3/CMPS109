@@ -10,7 +10,7 @@ void parse::checkLine(string input){
   cout<<"parsing input"<<endl;
   string command = input.substr(0,4);//sets string equal to first 4 letters 
   
-  if(command=="RULE"||command=="rule")rule(input);//cout<<"do rule stuff"<<endl;
+  if(command=="RULE"||command=="rule")addRule(input);//cout<<"do rule stuff"<<endl;
   else if(command=="FACT"||command=="fact")addFact(input);
   else if(command=="DUMP"||command=="dump")dump(input);
   else if(command=="LOAD"||command=="load")load(input);
@@ -19,7 +19,7 @@ void parse::checkLine(string input){
   else cout<<"please enter valid command"<<endl;
 }
 
-void parse::rule(string input){//working
+void parse::addRule(string input){//working
   vector<pair <string,vector <char> > > rules;
   vector<pair <string,vector <char> > > facts;    
   
@@ -36,15 +36,17 @@ void parse::rule(string input){//working
   string parameter;
   int base=1;
   int tail;
+  vector <string> params;
+  int c = 0;
   while(base<token.length()){   //given token of args, splits into strings
     tail=token.find(",",base);
     if(tail==-1)tail=token.find(")",base);
-    
     parameter = token.substr(base,tail-base);
-    cout<<"parameter: "<<parameter<<endl;//insert rule arg
+    params.push_back(parameter);
+    cout<<"parameter: "<<parameter<<" & params "<<params[c]<<endl;//insert rule arg
+    c++;
     base=tail+1;
   }
-  
   
   int operand;
   int preop=input.find(" ", endrule);
@@ -60,14 +62,19 @@ void parse::rule(string input){//working
   
   int start1;
   string name;
+  vector < vector <string> > predParams;
+  int predCount = 0;
   while(cursor<input.length()){	//continue while predicates remain
+    vector <string> pred;
     start1 = input.find(" " , cursor);
     end1 =  input.find("(" , cursor);
     name = input.substr(start1+1,(end1-start1-1));//predicate name
     cout<<"name: "<< name<<endl;//test then insert predicate name
+    
+    pred.push_back(name);
+
     cursor=end1;
     endparam=input.find(")",end1);
-    
     token=input.substr(cursor, (endparam-cursor+1));
     cout<<"testing token "<<token<<endl;
     cursor=endparam+1;
@@ -79,11 +86,19 @@ void parse::rule(string input){//working
       
       parameter = token.substr(base,tail-base);
       cout<<"parameter: "<<parameter<<endl;//insert predicate arg
+      pred.push_back(parameter);
       base=tail+1;
-    }    
+    }
+
+    predParams.push_back(pred);    
     cout<<"finished with predicate"<<endl;
     cursor=endparam+1;
   }
+  // make rule object
+  rule curRule(factName, params, operand, predParams);
+  curRB.add(curRule);
+  curRB.dump(true);
+
 }
 
 void parse::addFact(string input){//working
@@ -128,7 +143,9 @@ void parse::dump(string input){
    ofstream file;
    file.open(filename);
    string f = curKB.print(false);
+   string r = curRB.dump(false);
    file << f;
+   file << r;
    file.close();
 }
 
@@ -165,14 +182,11 @@ void parse::infer(string input){      //working
   string parameter; // parameter holds the current parameter
   int base=1;
   int tail;
-  int c = 0;
   while(base<token.length()){
     tail=token.find(",",base);
     if(tail==-1)tail=token.find(")",base);
     parameter = token.substr(base,tail-base);
-    params.push_back(parameter);
-    cout<<"parameter: "<<parameter<<" & params "<<params[c]<<endl;
-    c++;
+    cout<<"parameter: "<<parameter<<endl;
     base=tail+1;
   }
   
@@ -185,21 +199,8 @@ void parse::infer(string input){      //working
     string query2=input.substr(space2+1,end2-space2-1);
     cout<<"query2  ("<<query2<<")"<<endl;
   }
-  // get rule being inferenced
-  inferRule(curRB.hash[query]);
-}
 
-void parse::inferRule(rule iRule) {
-   
-   // if the predicate is a fact 
-   if (curRB.find(iRule.predicate) == hash.end) {
-      // call inferFact, passing that fact name
-      inferFact (curKB.hash[predicate]);
-   } else {
-      inferRule (curRB.hash[predicate]);
-   }
 }
-
 
 void parse::drop(string input){
   int space=input.find(" ",0);

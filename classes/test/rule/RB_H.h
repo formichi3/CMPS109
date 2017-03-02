@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include "../rule/Rule_H.h"
+#include "Rule_H.h"
 
 using namespace std;
 
@@ -16,6 +16,7 @@ public:
        void add(rule p_item);
        void drop(string p_name);
        void dump();
+       vector<rule> traversRule(string p_name);
        unordered_multimap<string, rule> hash;
        //unordered_map<string, rule> hash;
 };
