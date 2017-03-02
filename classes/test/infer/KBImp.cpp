@@ -1,9 +1,11 @@
 #include "KB_H.h"
 #include <iostream>
 
+
 void KB::add(fact p_fact){
+  vector <string> sameName;
   // if they have the same name
-  // if(hash.find(p_fact.name)!=hash.end) count++; 
+  //if(hash.find(p_fact.name)!=hash.end) 
   // create a pair wiith the fact name and fact object
   pair<string, fact> p_insert (p_fact.name, p_fact);
   // insert that pair into the hash

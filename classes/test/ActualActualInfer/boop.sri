@@ -1,0 +1,5 @@
+FACT Mother(Margret,Bob)
+FACT Mother(Margret,Robert)
+FACT Mother(Marry,Albert)
+FACT Mother(Marry,John)
+
