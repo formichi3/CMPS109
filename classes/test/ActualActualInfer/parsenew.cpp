@@ -203,11 +203,11 @@ void parse::infer(string input){      //working
     string query2=input.substr(space2+1,end2-space2-1);
     //cout<<"query2  ("<<query2<<")"<<endl;
   }
-  
+
   // if query is a fact...
   if (curKB.hash.find(query) != curKB.hash.end()) { inferFact(query); }
   // if query is a rule...
-  else if (curRB.hash.find(query) != curRB.hash.end()) { 
+  else if (curRB.hash.find(query) != curRB.hash.end()) {
      // split rules into indices of a vector call one by one
      vector <rule> rules_to_be_inferred;
      rules_to_be_inferred = curRB.traversRule(query);
@@ -222,7 +222,7 @@ void parse::inferRule(rule p_rule){
    cout << endl << p_rule.name << endl << "---------" <<endl;
    string name;
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      // store name of first predicate 
+      // store name of first predicate
       name = *it->begin();
       // search KB for name
       if (curKB.hash.find(name) != curKB.hash.end()) {
@@ -234,10 +234,10 @@ void parse::inferRule(rule p_rule){
 	 auto R = *(curRB.hash.find(name));
 	 // if found call inferRule
 	 inferRule(R.second);
-      } 
+      }
       // if name is not in RB or KB print error msg then break
       else {
-	 cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl; 
+	 cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
          break;
       }
    }
@@ -246,7 +246,7 @@ void parse::inferRule(rule p_rule){
 void parse::inferFact(string p_factName){
    // this vector holds all the relations for a given fact
    vector< vector <string> > relations;
-   
+
    // loop through all facts of the same name
    auto range = curKB.hash.equal_range(p_factName);
    for (auto x = range.first; x!=range.second; x++){
@@ -288,6 +288,7 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
+  p.load("input.sri");
 
   while(getline(cin,input)&&input!="-1"){
     p.checkLine(input);

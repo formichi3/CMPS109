@@ -1,4 +1,5 @@
 #include "Rule_H.h"
+#include <typeinfo>
 
 using namespace std;
 
@@ -73,4 +74,34 @@ string rule::createString(){
       ruleString = ruleString + ")";
   }
   return ruleString;
+}
+
+bool operator==(const rule &left, const rule &right){
+
+  if (left.logOperator == right.logOperator && left.args.size() == right.args.size() && left.predicates.size() == right.predicates.size()){
+    for (int i = 0; i < left.args.size(); i++){
+		cout << left.args[i] << " : " << right.args[i] << endl;
+      if(left.args[i] != right.args[i]){
+        return false;
+      }
+    }
+    auto it2 = right.predicates[0].begin();
+    for (int j = 0 ;j < left.predicates.size(); j++){
+	  it2 = right.predicates[j].begin();
+      for (auto it = left.predicates[j].begin(); it != left.predicates[j].end(); it++){
+		cout << *it << " : " << *it2 << endl;
+        if(*it != *it2){
+          return false;
+        }
+        it2++;
+      }
+    }
+    return true;
+  }
+  else{
+    return false;
+  }
+
+
+
 }
