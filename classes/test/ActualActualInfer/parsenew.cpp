@@ -228,10 +228,10 @@ void parse::infer(string input){      //working
   } else { cout<<query<<" is not a fact or rule."<<endl; }
 }
 
-void parse::removeDuplicates(fact r_fact){
-
-
-}
+// void parse::removeDuplicates(fact r_fact){
+//
+//
+// }
 
 
 void parse::inferRule(rule p_rule,string newfactname){
