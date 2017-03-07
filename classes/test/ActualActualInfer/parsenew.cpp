@@ -47,7 +47,7 @@ void parse::addRule(string input){//working
     c++;
     base=tail+1;
   }
-
+  
   int operand;
   int preop=input.find(" ", endrule);
   string oper=input.substr(preop+1,2);
@@ -59,7 +59,7 @@ void parse::addRule(string input){//working
   }
   //cout<<"operand "<<operand<<endl;//insert operator
   int cursor=preop+1;
-
+  
   int start1;
   string name;
   vector < vector <string> > predParams;
@@ -70,26 +70,26 @@ void parse::addRule(string input){//working
     end1 =  input.find("(" , cursor);
     name = input.substr(start1+1,(end1-start1-1));//predicate name
     //cout<<"name: "<< name<<endl;//test then insert predicate name
-
+    
     pred.push_back(name);
-
+    
     cursor=end1;
     endparam=input.find(")",end1);
     token=input.substr(cursor, (endparam-cursor+1));
     //cout<<"testing token "<<token<<endl;
     cursor=endparam+1;
-
+    
     base=1;
     while(base<token.length()){ //splits token into strings
       tail=token.find(",",base);
       if(tail==-1)tail=token.find(")",base);
-
+      
       parameter = token.substr(base,tail-base);
       //cout<<"parameter: "<<parameter<<endl;//insert predicate arg
       pred.push_back(parameter);
       base=tail+1;
     }
-
+    
     predParams.push_back(pred);
     //cout<<"finished with predicate"<<endl;
     cursor=endparam+1;
@@ -257,31 +257,44 @@ void parse::inferFact(string p_factName,string newfactname){
    vector< vector <string> > relations;
    vector<string> args;   
    int inferArgs=inferParamNames.size();
-   cout<<"vector size: "<<inferArgs<<endl;
+   //cout<<"vector size: "<<inferArgs<<endl;
    // loop through all facts of the same name
    auto range = curKB.hash.equal_range(p_factName);
    for (auto x = range.first; x!=range.second; x++){
+    
      // stores a vector of all arguments for a fact
      
      // loop through all the paramaters of each fact
      int paramSize=x->second.paramaters.size(); 
-     cout<<paramSize<<" param count"<<endl;   
+     //cout<<paramSize<<" param count"<<endl;   
+ 
+     int counter=0;
      if(inferArgs==paramSize){
-     for( auto y = x->second.paramaters.begin(); y != x->second.paramaters.end(); y++){
-       args.push_back(*y);
+       for( auto y = x->second.paramaters.begin(); (y != x->second.paramaters.end()&&counter<inferArgs); y++){
+	 string curArg=inferParamNames[counter];           
+	 if(curArg.substr(0,1)=="$"){                                                                     
+	   //	   cout<<"curArg"<<endl;                                                
+       args.push_back(*y);	 
+}                                                                               
+	 else if(curArg==*y)args.push_back(*y); 
+         else {
+	   args.clear();
+	
+           break;
+	 }
+	 counter++;       
+       }
+       // push the vector of arguments of a fact into the larger vector of all relations
+      
+       relations.push_back(args);
+       args.clear();
      }
-     // push the vector of arguments of a fact into the larger vector of all relations
-     relations.push_back(args);
-     args.clear();
    }
-   }
-
 
    
-
    if(newfactname!=""){
      cout<<"creating facts with name "<<newfactname<<endl;
-
+     
      // this double loop is reserved for printing the relationships                           
      cout << endl << p_factName << ":" << endl;
      for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
