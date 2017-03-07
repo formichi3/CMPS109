@@ -21,6 +21,7 @@ public:
        vector < vector < string > > predicates;
        string createString();
 
+       friend bool operator==(const rule &left, const rule &right);
        void print();
 };
 

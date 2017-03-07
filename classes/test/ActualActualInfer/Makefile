@@ -1,2 +1,3 @@
 make:
-	g++ -std=c++11 *.h *.cpp -o tester
+	g++ -std=c++11 *.h *.cpp
+	./a.out
