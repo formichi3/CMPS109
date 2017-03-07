@@ -136,17 +136,17 @@ void parse::addFact(string input){//working
 }
 
 void parse::dump(string input){
-   int space = input.find(" " , 0);
-   int endfile = input.find("\n" , 0);
-   string filename=input.substr(space+1,(endfile-space-1));
-   ofstream file;
-   file.open(filename);
-   string f = curKB.print(false);
-   file << f;
-   string r = curRB.dump();
-   file << r;
-   cout<<"File "<<filename<<" created"<<endl;
-   file.close();
+  int space = input.find(" " , 0);
+  int endfile = input.find("\n" , 0);
+  string filename=input.substr(space+1,(endfile-space-1));
+  ofstream file;
+  file.open(filename);
+  string f = curKB.print(false);
+  file << f;
+  string r = curRB.dump();
+  file << r;
+  cout<<"File "<<filename<<" created"<<endl;
+  file.close();
 }
 
 void parse::load(string input){//working, opens file and reads it line by line
@@ -158,11 +158,11 @@ void parse::load(string input){//working, opens file and reads it line by line
   ifstream infile;
   infile.open(filename.c_str());
   string line;
-    while (std::getline(infile, line))
-      {
-	cout<<endl<<line<<endl; // Process str
-	checkLine(line);
-      }
+  while (std::getline(infile, line))
+  {
+    cout<<endl<<line<<endl; // Process str
+    checkLine(line);
+  }
 }//end of load parsing
 
 void parse::infer(string input){      //working
@@ -177,7 +177,7 @@ void parse::infer(string input){      //working
   // token holds the name
   string token=input.substr(end1, (endparam-end1+1));
   cout<<"testing token "<<token<<endl;
-   
+
 
 
   vector <string> params; // params is a vector of parameters
@@ -196,61 +196,35 @@ void parse::infer(string input){      //working
 
   inferParamNames = params;
 
- string newfactname="";  
- int end=input.find(")" , 0);
- int zerocheck=0;  
- for(int i=end+1;i<inputSize;i++){
-   if(input.substr(i,1)!=" ")zerocheck=1;
- }
+  string newfactname="";
+  int end=input.find(")" , 0);
+  int zerocheck=0;
+  for(int i=end+1;i<inputSize;i++){
+    if(input.substr(i,1)!=" ")zerocheck=1;
+  }
 
-if(zerocheck==1){
+  if(zerocheck==1){
     int space2=input.find(" ",end);
     while(input.substr(space2,1)==" ")space2++;
-   int end2=input.find(" ",space2+1);
+    int end2=input.find(" ",space2+1);
     if(end2==-1) end2=input.find("\n",space2);
     // newfactname stores an newname if used
     newfactname=input.substr(space2,end2-space2);
     cout<<"new fact name "<<newfactname<<"---"<<endl;
   }
-   
 
 
-//  int operand;
-//  int findop = curKB.hash.find(query);
-//  cout << "curKB.hash.find(query) = " << findop << endl;
-//  auto op = 
-
-
- // string oper = query.substr(preop+1,2);
-  
-//  if(oper == "or" || oper =="OR"){
-//	 operand =0; 
-//	cout<< "operator: " << oper <<endl; 
-//  } else if ( oper=="an" || oper=="AN"){ 
-//	operand =1;
-//	cout<< "operator: " << oper<<endl;
-//  }
-//  else { 
-//	cout << "Invalid operator2222"<<endl; return;
-//  }
-  
-  
   // if query is a fact...
- if (curKB.hash.find(query) != curKB.hash.end()) { 
-	
-	inferFact(query,newfactname); 
-
- }
+  if (curKB.hash.find(query) != curKB.hash.end()) { inferFact(query,newfactname); }
   // if query is a rule...
-
-  else if (curRB.hash.find(query) != curRB.hash.end()) { 
-     // split rules into indices of a vector call one by one
-     vector <rule> rules_to_be_inferred;
-     rules_to_be_inferred = curRB.traversRule(query);
-     for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
-       inferRule(*it,newfactname);
-     }
-  // if query is neither a rule or fact...
+  else if (curRB.hash.find(query) != curRB.hash.end()) {
+    // split rules into indices of a vector call one by one
+    vector <rule> rules_to_be_inferred;
+    rules_to_be_inferred = curRB.traverseRule(query);
+    for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
+      inferRule(*it,newfactname);
+    }
+    // if query is neither a rule or fact...
   } else { cout<<query<<" is not a fact or rule."<<endl; }
 }
 
@@ -263,12 +237,12 @@ void parse::removeDuplicates(fact r_fact){
 void parse::inferRule(rule p_rule,string newfactname){
    cout << endl << p_rule.name << endl << "---------" <<endl;
    string name;
-   int operand = p_rule.logOperator;   
+   int operand = p_rule.logOperator;
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-	 
-     // store name of first predicate 
+
+     // store name of first predicate
 	name = *it->begin();
-      	if (operand == 0) {		
+      	if (operand == 0) {
       		// search KB for name
       		if (curKB.hash.find(name) != curKB.hash.end()) {
 			// if found call infer fact
@@ -279,10 +253,10 @@ void parse::inferRule(rule p_rule,string newfactname){
 	 		auto R = *(curRB.hash.find(name));
 	 		// if found call inferRule
 	 		inferRule(R.second,newfactname);
-      		} 
+      		}
       		// if name is not in RB or KB print error msg then break
       		else {
-	 		cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl; 
+	 		cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
          		break;
       		}
 	}else if (operand == 1) {
@@ -293,39 +267,53 @@ void parse::inferRule(rule p_rule,string newfactname){
 		cout << "Do not recognize rule, check operator." << endl;
 	}
     }
-}	
+}
 
 void parse::inferFact(string p_factName,string newfactname){
-   // this vector holds all the relations for a given fact
+
+   // THIS VECTOr holds all the relations for a given fact
    vector< vector <string> > relations;
-   vector<string> args;   
-   int inferArgs=inferParamNames.size();
-   cout<<"vector size: "<<inferArgs<<endl;
+   vector<string> args;
+   int inferArgs=inferParamNames.size();//#of inferred args i.e. infer parent(x,y,z) ==3
+   //cout<<"vector size: "<<inferArgs<<endl;
    // loop through all facts of the same name
    auto range = curKB.hash.equal_range(p_factName);
    for (auto x = range.first; x!=range.second; x++){
+     bool flag = true;
      // stores a vector of all arguments for a fact
-     
+
      // loop through all the paramaters of each fact
-     int paramSize=x->second.paramaters.size(); 
-     cout<<paramSize<<" param count"<<endl;   
+     int paramSize=x->second.paramaters.size();
+
+
+     int counter=0;
      if(inferArgs==paramSize){
-     for( auto y = x->second.paramaters.begin(); y != x->second.paramaters.end(); y++){
-       args.push_back(*y);
-     }
-     // push the vector of arguments of a fact into the larger vector of all relations
-     relations.push_back(args);
-     args.clear();
-   }
+       for( auto y = x->second.paramaters.begin(); (y != x->second.paramaters.end()&&counter<inferArgs); y++){
+	 string curArg=inferParamNames[counter];//first args of inferred args
+	 if(curArg.substr(0,1)=="$"){  //if args first char is $, it's a free variable. Proceed
+	   args.push_back(*y);
+	 }
+	 else if(curArg==*y)args.push_back(*y);//check with arg of fact
+         else {                           //inferred arg isn't free and doesn't match fact arg.Stop
+	   args.clear();
+           flag = false;
+           break;   //stop adding fact
+	 }
+	 counter++; //move forward to next inferred arg
+       }
+       // push the vector of arguments of a fact into the larger vector of all relations
+       if (flag) {
+          relations.push_back(args);
+          args.clear();
+       }
+      }
    }
 
-
-   
 
    if(newfactname!=""){
      cout<<"creating facts with name "<<newfactname<<endl;
 
-     // this double loop is reserved for printing the relationships                           
+     // this double loop is reserved for printing the relationships
      cout << endl << p_factName << ":" << endl;
      for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
        auto it0 = inferParamNames.begin();
@@ -339,7 +327,7 @@ void parse::inferFact(string p_factName,string newfactname){
        cout << endl;
        fact newFact(newfactname,args);
        curKB.add(newFact);
-       args.clear();     
+       args.clear();
 }
 }
    else{
@@ -348,13 +336,13 @@ void parse::inferFact(string p_factName,string newfactname){
    for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
       auto it0 = inferParamNames.begin();
       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-	 cout << *it0 << ": " << *it2;
-	 if (it2 != it1->end()-1) cout << " ";
-	 it0++;
+        cout << *it0 << ": " << *it2;
+        if (it2 != it1->end()-1) cout << " ";
+        it0++;
       }
       cout << endl;
-   }
-   }
+    }
+  }
 }
 
 void parse::drop(string input){

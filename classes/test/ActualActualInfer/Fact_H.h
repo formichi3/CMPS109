@@ -11,18 +11,12 @@ class fact{
 public:
        // constructors
        fact();
-	 // default constructor
        fact(string p_name, vector < string > p_paramaters);
-	 // fact constructor that takes name and vector of it's arguments
-
-       // destructor
        ~fact();
-       
-       // variables
        string name;
-	 // holds the fact's name
        vector < string > paramaters;
-	 // holds the fact's arguments
+       friend bool operator==(const fact &left, const fact &right);
+
 };
 
 #endif
