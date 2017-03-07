@@ -207,7 +207,7 @@ if(zerocheck==1){
    int end2=input.find(" ",space2+1);
     if(end2==-1) end2=input.find("\n",space2);
     // newfactname stores an newname if used
-    newfactname=input.substr(space2,end2-space2);
+    string newfactname=input.substr(space2,end2-space2);
     cout<<"new fact name "<<newfactname<<"---"<<endl;
   }
   
@@ -255,18 +255,13 @@ void parse::inferRule(rule p_rule,string newfactname){
 void parse::inferFact(string p_factName,string newfactname){
    // this vector holds all the relations for a given fact
    vector< vector <string> > relations;
-   vector<string> args;   
-   int inferArgs=inferParamNames.size();
-   cout<<"vector size: "<<inferArgs<<endl;
+   
    // loop through all facts of the same name
    auto range = curKB.hash.equal_range(p_factName);
    for (auto x = range.first; x!=range.second; x++){
      // stores a vector of all arguments for a fact
-     
+     vector <string> args;
      // loop through all the paramaters of each fact
-     int paramSize=x->second.paramaters.size(); 
-     cout<<paramSize<<" param count"<<endl;   
-     if(inferArgs==paramSize){
      for( auto y = x->second.paramaters.begin(); y != x->second.paramaters.end(); y++){
        args.push_back(*y);
      }
@@ -274,30 +269,10 @@ void parse::inferFact(string p_factName,string newfactname){
      relations.push_back(args);
      args.clear();
    }
-   }
 
-
-   
 
    if(newfactname!=""){
      cout<<"creating facts with name "<<newfactname<<endl;
-
-     // this double loop is reserved for printing the relationships                           
-     cout << endl << p_factName << ":" << endl;
-     for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-       auto it0 = inferParamNames.begin();
-       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-         cout << *it0 << ": " << *it2;
-	 args.push_back(*it2);
-
-         if (it2 != it1->end()-1) cout << " ";
-         it0++;
-       }
-       cout << endl;
-       fact newFact(newfactname,args);
-       curKB.add(newFact);
-       args.clear();     
-}
 }
    else{
    // this double loop is reserved for printing the relationships
@@ -328,7 +303,7 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
-  p.load("input.sri");
+
   while(getline(cin,input)&&input!="-1"){
     p.checkLine(input);
   }
