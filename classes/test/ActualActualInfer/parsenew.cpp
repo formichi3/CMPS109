@@ -171,12 +171,14 @@ void parse::infer(string input){      //working
   int money = input.find("$", 0);
   // query holds the name of the rule being inferenced
   string query=input.substr(inferSpace+1,(end1-inferSpace-1));
-  //cout<<"inference: "<<query<<endl;
-
+  cout<<"inference: "<<query<<endl;
+  int endr = input.find("(", inferSpace+1);
   int endparam=input.find(")", 0);
   // token holds the name
   string token=input.substr(end1, (endparam-end1+1));
-  //cout<<"testing token "<<token<<endl;
+  cout<<"testing token "<<token<<endl;
+   
+
 
   vector <string> params; // params is a vector of parameters
   string parameter; // parameter holds the current parameter
@@ -187,15 +189,15 @@ void parse::infer(string input){      //working
     tail=token.find(",",base);
     if(tail==-1)tail=token.find(")",base);
     parameter = token.substr(base,tail-base);
-    //cout<<"parameter: "<<parameter<<endl;
+    cout<<"parameter: "<<parameter<<endl;
     params.push_back(parameter);
     base=tail+1;
   }
 
   inferParamNames = params;
 
-string newfactname="";  
-int end=input.find(")" , 0);
+ string newfactname="";  
+ int end=input.find(")" , 0);
  int zerocheck=0;  
  for(int i=end+1;i<inputSize;i++){
    if(input.substr(i,1)!=" ")zerocheck=1;
@@ -210,10 +212,35 @@ if(zerocheck==1){
     newfactname=input.substr(space2,end2-space2);
     cout<<"new fact name "<<newfactname<<"---"<<endl;
   }
+   
+
+
+//  int operand;
+//  int findop = curKB.hash.find(query);
+//  cout << "curKB.hash.find(query) = " << findop << endl;
+//  auto op = 
+
+
+ // string oper = query.substr(preop+1,2);
+  
+//  if(oper == "or" || oper =="OR"){
+//	 operand =0; 
+//	cout<< "operator: " << oper <<endl; 
+//  } else if ( oper=="an" || oper=="AN"){ 
+//	operand =1;
+//	cout<< "operator: " << oper<<endl;
+//  }
+//  else { 
+//	cout << "Invalid operator2222"<<endl; return;
+//  }
   
   
   // if query is a fact...
- if (curKB.hash.find(query) != curKB.hash.end()) { inferFact(query,newfactname); }
+ if (curKB.hash.find(query) != curKB.hash.end()) { 
+	
+	inferFact(query,newfactname); 
+
+ }
   // if query is a rule...
 
   else if (curRB.hash.find(query) != curRB.hash.end()) { 
@@ -227,30 +254,46 @@ if(zerocheck==1){
   } else { cout<<query<<" is not a fact or rule."<<endl; }
 }
 
+void parse::removeDuplicates(fact r_fact){
+
+
+}
+
+
 void parse::inferRule(rule p_rule,string newfactname){
    cout << endl << p_rule.name << endl << "---------" <<endl;
    string name;
+   int operand = p_rule.logOperator;   
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-      // store name of first predicate 
-      name = *it->begin();
-      // search KB for name
-      if (curKB.hash.find(name) != curKB.hash.end()) {
-	 // if found call infer fact
-	inferFact(*it->begin(),newfactname);
-      }
-      // search the RB for name
-      else if (curRB.hash.find(name) != curRB.hash.end()) {
-	 auto R = *(curRB.hash.find(name));
-	 // if found call inferRule
-	 inferRule(R.second,newfactname);
-      } 
-      // if name is not in RB or KB print error msg then break
-      else {
-	 cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl; 
-         break;
-      }
-   }
-}
+	 
+     // store name of first predicate 
+	name = *it->begin();
+      	if (operand == 0) {		
+      		// search KB for name
+      		if (curKB.hash.find(name) != curKB.hash.end()) {
+			// if found call infer fact
+			inferFact(*it->begin(),newfactname);
+		}
+      		// search the RB for name
+      		else if (curRB.hash.find(name) != curRB.hash.end()) {
+	 		auto R = *(curRB.hash.find(name));
+	 		// if found call inferRule
+	 		inferRule(R.second,newfactname);
+      		} 
+      		// if name is not in RB or KB print error msg then break
+      		else {
+	 		cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl; 
+         		break;
+      		}
+	}else if (operand == 1) {
+	//maybe where to do the pipelining of and??
+		cout << "and operatorrrr" << endl;
+
+	} else {
+		cout << "Do not recognize rule, check operator." << endl;
+	}
+    }
+}	
 
 void parse::inferFact(string p_factName,string newfactname){
    // this vector holds all the relations for a given fact

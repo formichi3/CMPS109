@@ -1,3 +1,4 @@
 fact a(1,2,3)
 fact a(1,2,4)
 fact b(1,2,3)
+infer b
