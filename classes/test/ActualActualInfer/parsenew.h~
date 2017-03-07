@@ -45,9 +45,9 @@ class parse{
      // about 50% complete
   void drop(string x);
      // drops facts or rules from their respective database
-  void inferFact(string p_factName,string newfactname);
+  void inferFact(string p_factName,string newfactname,vector<string> params);
      // helper function for infer
-  void inferRule(rule p_ruleName,string newfactname);
+  void inferRule(rule p_ruleName,string newfactname,vector<string> params);
      // recursive helper function for infer
 };
 
