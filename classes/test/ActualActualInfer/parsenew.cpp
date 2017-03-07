@@ -240,32 +240,24 @@ void parse::inferRule(rule p_rule,string newfactname){
    int operand = p_rule.logOperator;
    for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
 
-     // store name of first predicate
-	name = *it->begin();
-      	if (operand == 0) {
-      		// search KB for name
-      		if (curKB.hash.find(name) != curKB.hash.end()) {
-			// if found call infer fact
-			inferFact(*it->begin(),newfactname);
-		}
-      		// search the RB for name
-      		else if (curRB.hash.find(name) != curRB.hash.end()) {
-	 		auto R = *(curRB.hash.find(name));
-	 		// if found call inferRule
-	 		inferRule(R.second,newfactname);
-      		}
-      		// if name is not in RB or KB print error msg then break
-      		else {
-	 		cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
-         		break;
-      		}
-	}else if (operand == 1) {
-	//maybe where to do the pipelining of and??
-		cout << "and operatorrrr" << endl;
-
-	} else {
-		cout << "Do not recognize rule, check operator." << endl;
-	}
+          // store name of first predicate
+	  name = *it->begin();
+	  // search KB for name
+	  if (curKB.hash.find(name) != curKB.hash.end()) {
+		  // if found call infer fact
+		  inferFact(*it->begin(),newfactname);
+	  }
+	  // search the RB for name
+	  else if (curRB.hash.find(name) != curRB.hash.end()) {
+		  auto R = *(curRB.hash.find(name));
+		  // if found call inferRule
+		  inferRule(R.second,newfactname);
+	  }
+	  // if name is not in RB or KB print error msg then break
+	  else {
+		  cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
+		  break;
+	  }
     }
 }
 
@@ -291,6 +283,9 @@ void parse::inferFact(string p_factName,string newfactname){
        for( auto y = x->second.paramaters.begin(); (y != x->second.paramaters.end()&&counter<inferArgs); y++){
 	 string curArg=inferParamNames[counter];//first args of inferred args
 	 if(curArg.substr(0,1)=="$"){  //if args first char is $, it's a free variable. Proceed
+	   int argSize=curArg.length();
+	   string freeArg=curArg.substr(1,argSize-1);
+	   cout<< "free arg " <<freeArg<<endl;
 	   args.push_back(*y);
 	 }
 	 else if(curArg==*y)args.push_back(*y);//check with arg of fact
@@ -318,7 +313,8 @@ void parse::inferFact(string p_factName,string newfactname){
      for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
        auto it0 = inferParamNames.begin();
        for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-         cout << *it0 << ": " << *it2;
+         // if (it2->paramaters)
+	 cout << *it0 << ": " << *it2;
 	 args.push_back(*it2);
 
          if (it2 != it1->end()-1) cout << " ";
@@ -328,8 +324,8 @@ void parse::inferFact(string p_factName,string newfactname){
        fact newFact(newfactname,args);
        curKB.add(newFact);
        args.clear();
-}
-}
+     }
+   }
    else{
    // this double loop is reserved for printing the relationships
    cout << endl << p_factName << ":" << endl;
