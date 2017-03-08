@@ -178,8 +178,6 @@ void parse::infer(string input){      //working
   string token=input.substr(end1, (endparam-end1+1));
   cout<<"testing token "<<token<<endl;
 
-
-
   vector <string> params; // params is a vector of parameters
   string parameter; // parameter holds the current parameter
   int base=1;
@@ -222,6 +220,7 @@ void parse::infer(string input){      //working
     vector <rule> rules_to_be_inferred;
     rules_to_be_inferred = curRB.traverseRule(query);
     for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
+      rule newRule = it->substitute(inferParamNames);
       inferRule(*it,newfactname);
     }
     // if query is neither a rule or fact...
@@ -235,43 +234,51 @@ void parse::infer(string input){      //working
 
 
 void parse::inferRule(rule p_rule,string newfactname){
-  cout << endl << p_rule.name << endl << "---------" <<endl;
+  //cout << endl << p_rule.name << endl << "---------" <<endl;
   string name;
   int operand = p_rule.logOperator;
   for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-
+    vector<vector<vector<string>>> allRelationships;
     // store name of first predicate
     name = *it->begin();
-    if (operand == 0) {
-      // search KB for name
-      if (curKB.hash.find(name) != curKB.hash.end()) {
-        // if found call infer fact
-        inferFact(*it->begin(),newfactname);
-      }
-      // search the RB for name
-      else if (curRB.hash.find(name) != curRB.hash.end()) {
-        auto R = *(curRB.hash.find(name));
-        // if found call inferRule
-        inferRule(R.second,newfactname);
-      }
-      // if name is not in RB or KB print error msg then break
-      else {
-        cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
-        break;
-      }
-    }else if (operand == 1) {
-      //maybe where to do the pipelining of and??
-      cout << "and operatorrrr" << endl;
+   // search KB for name
+   if (curKB.hash.find(name) != curKB.hash.end()) {
+     // if found call infer fact
+     //vector<vector<string>> relationships;
+     //vector<vector<vector<string>>> allRelationships;
+     allRelationships.push_back(inferFact(*it->begin(),newfactname));
+     auto it2 = allRelationships.end()-1;
+     //*it2->insert(it2->begin(), p_rule.args.begin()+1, p_rule.args.end());
 
-    } else {
-      cout << "Do not recognize rule, check operator." << endl;
-    }
+
+     vector<string> preds;
+     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
+      preds.push_back(*it3);
+     }
+   
+     it2->push_back(preds);
+
+   }
+   // search the RB for name
+   else if (curRB.hash.find(name) != curRB.hash.end()) {
+     auto R = *(curRB.hash.find(name));
+     // if found call inferRule
+     rule newRule = R.second.substitute(inferParamNames);
+     inferRule(newRule,newfactname);
+   }
+   // if name is not in RB or KB print error msg then break
+   else {
+     cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
+     break;
+   }
+   // call OR/swap here
+   printSomething3D(allRelationships);
+   
   }
 }
 
-void parse::inferFact(string p_factName,string newfactname){
-
-  // THIS VECTOr holds all the relations for a given fact
+vector<vector<string>> parse::inferFact(string p_factName,string newfactname){
+  // this vector holds all the relations for a given fact
   vector< vector <string> > relations;
   vector<string> args;
   int inferArgs=inferParamNames.size();//#of inferred args i.e. infer parent(x,y,z) ==3
@@ -308,41 +315,81 @@ void parse::inferFact(string p_factName,string newfactname){
       }
     }
   }
-
-if(newfactname!=""){
-  cout<<"creating facts with name "<<newfactname<<endl;
-
-  // this double loop is reserved for printing the relationships
-  cout << endl << p_factName << ":" << endl;
-  for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-    auto it0 = inferParamNames.begin();
-    for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-      cout << *it0 << ": " << *it2;
-      args.push_back(*it2);
-
-      if (it2 != it1->end()-1) cout << " ";
-      it0++;
-    }
-    cout << endl;
-    fact newFact(newfactname,args);
-    curKB.add(newFact);
-    args.clear();
-  }
+  //printSomething(relations);
+  return relations;
 }
-else{
-  // this double loop is reserved for printing the relationships
-  cout << endl << p_factName << ":" << endl;
-  for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-    auto it0 = inferParamNames.begin();
-    for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-      cout << *it0 << ": " << *it2;
-      if (it2 != it1->end()-1) cout << " ";
-      it0++;
-    }
-    cout << endl;
-  }
+
+/*void parse::swapList(vector<vector<vector<string>>> allRelationships, rule p_rule){
+   // loop through predicates
+   for (it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++) {
+      // loop through predicate arguments
+      for (it2 = it.begin()+1; it2!=it.end(); it2++){
+	 // if argument is found to be matching the 
+	 if (p_rule.args[i]==*it2) {
+	    for (Vit = allRelationships.begin(); Vit!=allRelationships.end(); Vit++){
+	       for (Vit2 = it.begin(); Vit2 = it.end(); Vit2++){
+		  Vit2.push_back(*it2);
+	 else i++;
+      }
+   }
+}*/
+
+void parse::printSomething(vector<vector<string>> relations) {
+   for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
+      bool flag = false;
+      for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
+	 cout << *it2 << " ";
+         flag = true;
+      }
+      if (flag) cout<<endl;
+   }
 }
+
+void parse::printSomething3D(vector<vector<vector<string>>> allRelations) {
+   for (auto it1 = allRelations.begin(); it1 != allRelations.end(); it1++){
+      printSomething(*it1);
+   }
 }
+
+/*void parse::traverseList(vector<vector<string>> relations, rule p_rule){
+   for (it = inferParamNames.begin(); it != inferParamNames.end(); it++) {
+      if p_rule
+*/
+
+   /*if(newfactname!=""){
+     cout<<"creating facts with name "<<newfactname<<endl;
+
+     // this double loop is reserved for printing the relationships
+     cout << endl << p_factName << ":" << endl;
+     for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
+       auto it0 = inferParamNames.begin();
+       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
+	 cout << *it0 << ": " << *it2;
+	 args.push_back(*it2);
+
+	 if (it2 != it1->end()-1) cout << " ";
+	 it0++;
+       }
+       cout << endl;
+       fact newFact(newfactname,args);
+       curKB.add(newFact);
+       args.clear();
+     }
+   }
+   else{
+     // this double loop is reserved for printing the relationships
+     cout << endl << p_factName << ":" << endl;
+     for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
+       auto it0 = inferParamNames.begin();
+       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
+	 cout << *it0 << ": " << *it2;
+	 if (it2 != it1->end()-1) cout << " ";
+	 it0++;
+       }
+       cout << endl;
+     }
+   }
+}*/
 
 void parse::drop(string input){
   int space=input.find(" ",0);
