@@ -20,6 +20,7 @@ public:
        vector < string > args; //args to be returned when inferred
        vector < vector < string > > predicates;
        string createString();
+       rule substitute(vector<string> p_args);
 
        friend bool operator==(const rule &left, const rule &right);
        void print();

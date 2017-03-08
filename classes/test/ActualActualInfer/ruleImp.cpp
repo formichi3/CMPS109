@@ -99,7 +99,19 @@ bool operator==(const rule &left, const rule &right){
   else{
     return false;
   }
-
-
-
+}
+rule rule::substitute(vector<string> p_args){
+  rule subRule(this->name, p_args, this->logOperator, this->predicates);
+  auto curArg = p_args.begin();
+  for (auto it = this->args.begin(); it != this->args.end(); it++){
+    for (auto it2 = subRule.predicates.begin(); it2 != subRule.predicates.end(); it2++){
+      for (auto it3 = it2->begin(); it3 != it2->end(); it3++){
+        if (*it3 == *it){
+          *it3 = *curArg;
+        }
+      }
+    }
+    curArg++;
+  }
+  return subRule;
 }
