@@ -9,13 +9,16 @@ void parse::checkLine(string input){
   inputSize=input.size();
   //cout<<"Enter a command"<<endl;
   string command = input.substr(0,4);//sets string equal to first 4 letters
-
-  if(command=="RULE"||command=="rule")addRule(input);//cout<<"do rule stuff"<<endl;
-  else if(command=="FACT"||command=="fact")addFact(input);
-  else if(command=="DUMP"||command=="dump")dump(input);
-  else if(command=="LOAD"||command=="load")load(input);
-  else if(command=="DROP"||command=="drop")drop(input);
-  else if(command=="INFE"||command=="infe")infer(input);
+  //  input.erase(remove(input.begin(),input.end(), '\t'), input.end());//removes tabs characters...doesn't work
+  string input2=input;    //input2 will be no whitespace version
+  input2.erase( remove( input2.begin(), input2.end(), ' ' ), input2.end() );//removes whitespaces from input       
+  //cout<<input2<<endl;
+ if(command=="RULE"||command=="rule")addRule(input);//parse okay durability
+ else if(command=="FACT"||command=="fact")addFact(input2);//parse durable
+  else if(command=="DUMP"||command=="dump")dump(input2);//parse durable
+  else if(command=="LOAD"||command=="load")load(input2);//parse durable, weak at calling from main
+  else if(command=="DROP"||command=="drop")drop(input2);//parse durable
+  else if(command=="INFE"||command=="infe")infer(input);//parse needs work
   else cout<<"please enter valid command"<<endl;
 }
 
@@ -24,14 +27,18 @@ void parse::addRule(string input){//working
   vector<pair <string,vector <char> > > facts;
 
   int space = input.find(" " , 0);
+  while(input.substr(space+1,1)==" ")space++;
+
+
   int endrule = input.find("(" , space+1);
   string factName=input.substr(space+1,(endrule-space-1));//name of rule
-  //cout<<"rule: "<<factName<<endl;
+  //  cout<<"factname: "<<factName<<endl;
 
   int end1 =  input.find("(" , 0);
   int endparam=input.find(")", 0);
   string token=input.substr(end1, (endparam-end1+1));//create token of args
-  //cout<<"testing token "<<token<<endl;
+  token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token   
+//cout<<"testing token "<<token<<endl;
 
   string parameter;
   int base=1;
@@ -40,16 +47,18 @@ void parse::addRule(string input){//working
   int c = 0;
   while(base<token.length()){   //given token of args, splits into strings
     tail=token.find(",",base);
+    while(token.substr(tail+1,1)==" ")tail++;
     if(tail==-1)tail=token.find(")",base);
     parameter = token.substr(base,tail-base);
     params.push_back(parameter);
     //cout<<"parameter: "<<parameter<<" & params "<<params[c]<<endl;//insert rule arg
     c++;
     base=tail+1;
-  }
+  }//closes while loop getting rule args
 
   int operand;
-  int preop=input.find(" ", endrule);
+  int preop=input.find(":-", endrule)+1;//sets cursor to front end of symbol
+  while(input.substr(preop+1,1)==" ")preop++;
   string oper=input.substr(preop+1,2);
   if(oper=="or"||oper=="OR")operand=0;//determines operand
   else if (oper=="an"||oper=="AN")operand=1;
@@ -58,29 +67,34 @@ void parse::addRule(string input){//working
     return;
   }
   //cout<<"operand "<<operand<<endl;//insert operator
-  int cursor=preop+1;
-
+  int cursor=preop+3;
+  while(input.substr(cursor+1,1)==" ")cursor++;
   int start1;
   string name;
   vector < vector <string> > predParams;
   int predCount = 0;
-  while(cursor<input.length()){	//continue while predicates remain
+  //cursor+=2;
+  while(cursor<input.length()){	//continue while args remain
     vector <string> pred;
-    start1 = input.find(" " , cursor);
+    //start1 = input.find(" " , cursor);
+    start1=cursor-1;
+    while(input.substr(start1+1,1)==" ")start1++;
     end1 =  input.find("(" , cursor);
     name = input.substr(start1+1,(end1-start1-1));//predicate name
     //cout<<"name: "<< name<<endl;//test then insert predicate name
-
+    
     pred.push_back(name);
-
+    
     cursor=end1;
     endparam=input.find(")",end1);
     token=input.substr(cursor, (endparam-cursor+1));
+    token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token     
     //cout<<"testing token "<<token<<endl;
     cursor=endparam+1;
 
     base=1;
     while(base<token.length()){ //splits token into strings
+    
       tail=token.find(",",base);
       if(tail==-1)tail=token.find(")",base);
 
@@ -93,6 +107,7 @@ void parse::addRule(string input){//working
     predParams.push_back(pred);
     //cout<<"finished with predicate"<<endl;
     cursor=endparam+1;
+    while(input.substr(cursor,1)==" ")cursor++;
   }
   // make rule object
   rule curRule(factName, params, operand, predParams);
@@ -101,15 +116,16 @@ void parse::addRule(string input){//working
 }
 
 void parse::addFact(string input){//working
-
-  int space = input.find(" ", 0);
+  int space =4;
+  //while(input.substr(space+1,1)==" ")space++;
   int endfact = input.find("(" , space+1);
-  string factName=input.substr(space+1,(endfact-space-1));
+  string factName=input.substr(space,(endfact-space));
   //cout<<"fact: "<<factName<<endl;//insert fact name
 
   int end1 =  input.find("(" , 0);
   int endparam=input.find(")", 0);
   string token=input.substr(end1, (endparam-end1+1));
+  token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token
   //cout<<"testing token "<<token<<endl;
 
   string parameter;
@@ -136,9 +152,8 @@ void parse::addFact(string input){//working
 }
 
 void parse::dump(string input){
-  int space = input.find(" " , 0);
   int endfile = input.find("\n" , 0);
-  string filename=input.substr(space+1,(endfile-space-1));
+  string filename=input.substr(4,(endfile-4));
   ofstream file;
   file.open(filename);
   string f = curKB.print(false);
@@ -150,9 +165,8 @@ void parse::dump(string input){
 }
 
 void parse::load(string input){//working, opens file and reads it line by line
-  int space = input.find(" " , 0);
   int endfile = input.find("\n" , 0);
-  string filename=input.substr(space+1,(endfile-space-1));
+  string filename=input.substr(4,(endfile-4));
   cout<<filename<<"---"<<endl;
 
   ifstream infile;
@@ -392,11 +406,8 @@ void parse::printSomething3D(vector<vector<vector<string>>> allRelations) {
 }*/
 
 void parse::drop(string input){
-  int space=input.find(" ",0);
-  int end = input.find(" ",space+1);
-  if(end==-1)end=input.find("\n",space);
-
-  string name=input.substr(space+1,end-space-1);
+  int end = input.find("\n",0);
+  string name=input.substr(4,end-4);
   curKB.drop(name);
   curRB.drop(name);
 }
@@ -406,7 +417,8 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
-  p.load("input4.sri");
+  p.load("loadinput.sri");
+
   while(getline(cin,input)&&input!="-1"){
     p.checkLine(input);
   }
