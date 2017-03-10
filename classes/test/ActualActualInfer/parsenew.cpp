@@ -11,7 +11,7 @@ void parse::checkLine(string input){
   string command = input.substr(0,4);//sets string equal to first 4 letters
   //  input.erase(remove(input.begin(),input.end(), '\t'), input.end());//removes tabs characters...doesn't work
   string input2=input;    //input2 will be no whitespace version
-  input2.erase( remove( input2.begin(), input2.end(), ' ' ), input2.end() );//removes whitespaces from input       
+  input2.erase( remove( input2.begin(), input2.end(), ' ' ), input2.end() );//removes whitespaces from input
   //cout<<input2<<endl;
  if(command=="RULE"||command=="rule")addRule(input);//parse okay durability
  else if(command=="FACT"||command=="fact")addFact(input2);//parse durable
@@ -37,7 +37,7 @@ void parse::addRule(string input){//working
   int end1 =  input.find("(" , 0);
   int endparam=input.find(")", 0);
   string token=input.substr(end1, (endparam-end1+1));//create token of args
-  token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token   
+  token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token
 //cout<<"testing token "<<token<<endl;
 
   string parameter;
@@ -82,19 +82,19 @@ void parse::addRule(string input){//working
     end1 =  input.find("(" , cursor);
     name = input.substr(start1+1,(end1-start1-1));//predicate name
     //cout<<"name: "<< name<<endl;//test then insert predicate name
-    
+
     pred.push_back(name);
-    
+
     cursor=end1;
     endparam=input.find(")",end1);
     token=input.substr(cursor, (endparam-cursor+1));
-    token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token     
+    token.erase( remove( token.begin(), token.end(), ' ' ), token.end() );//removes whitespaces from token
     //cout<<"testing token "<<token<<endl;
     cursor=endparam+1;
 
     base=1;
     while(base<token.length()){ //splits token into strings
-    
+
       tail=token.find(",",base);
       if(tail==-1)tail=token.find(")",base);
 
@@ -227,9 +227,9 @@ void parse::infer(string input){      //working
 
   vector<vector<vector<string>>> big;
   // if query is a fact...
-  if (curKB.hash.find(query) != curKB.hash.end()) { 
-     inferFact(query,newfactname,true); 
-     big.clear();  
+  if (curKB.hash.find(query) != curKB.hash.end()) {
+     inferFact(query,newfactname,true);
+     big.clear();
   }
   // if query is a rule...
   else if (curRB.hash.find(query) != curRB.hash.end()) {
@@ -253,7 +253,7 @@ void parse::infer(string input){      //working
 // }
 
 
-vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname, 
+vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
                                vector<vector<vector<string>>> allRelationships, int count){
   int operand = p_rule.logOperator;
   cout<<endl<<"operand:"<<endl;
@@ -264,7 +264,7 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
   //cout << endl << p_rule.name << endl << "---------" <<endl;
   string name;
   for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-    
+
    // store name of first predicate
    name = *it->begin();
    // search KB for name
@@ -273,7 +273,7 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      //vector<vector<string>> relationships;
      //vector<vector<vector<string>>> allRelationships;
      allRelationships.push_back(inferFact(*it->begin(),newfactname,false));
-     
+
      auto it2 = allRelationships.end()-1;
      //*it2->insert(it2->begin(), p_rule.args.begin()+1, p_rule.args.end());
 
@@ -299,13 +299,13 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      }
      vector<vector<vector<string>>> temp;
      auto it2 = allRelationships.end()-1;
-     for (int count = R.second.predicates.size(); count>0; count--) {  
+     for (int count = R.second.predicates.size(); count>0; count--) {
 	if (R.second.predicates.size()<count) temp.push_back(*it2);
 	it2->push_back(preds);
 	it2--;
      }
      doOR(temp,newRule,count);
-     
+
      /*auto it2 = allRelationships.end()-1;
      vector<string> preds;
      for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
@@ -321,8 +321,8 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
      break;
    }
-   
-   
+
+
    /*auto it2 = allRelationships.end()-1;
    vector<string> preds;
    for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
@@ -333,12 +333,12 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
    cout<<endl<<endl;
    */
    //it2->push_back(preds);
-   
-   
+
+
    // call OR/swap here
    //cout << endl << endl;
    //printSomething3D(allRelationships);
-   
+
   }
   cout <<"print 3d vector recursion "<<count<<endl;
   doOR(allRelationships, p_rule, count);
@@ -395,6 +395,7 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
    cout << count <<endl;
    //printSomething3D(allRelationships, count);
    vector<vector<string>> result;
+   unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size(); i++){
       int c = allRelationships[i].size();
       //int c = count+1;
@@ -418,19 +419,34 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
 	    //if (flag)
 	    //else m++;
 	    //for (int m=0; m<p_rule.args.size(); m++) {
-	    //   if (vars[k]==p_rule.args[m]) 
+	    //   if (vars[k]==p_rule.args[m])
 	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
 	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
 	    //}
 	 //}
-	 //if (flag) 
+	 //if (flag)
 	 //cout << endl;
       result.push_back(relations);
+      string key = "";
+      for(auto it = relations.begin(); it!=relations.end(); it++){
+        key = key + *it;
+      }
+    //   if (key.at(0)!='$'){
+    //   result2.insert({key, relations});
+    // }
+    result2.insert({key, relations});
+
       }
    }
-   cout << endl << "Kabboom" << endl;
-   printSomething(result, 0);
+
    cout << endl << endl;
+   for (auto it2 = result2.begin(); it2 !=result2.end(); it2++){
+     for(auto it3 = it2->second.begin(); it3 != it2->second.end(); it3++){
+       cout << *it3 << " ";
+     }
+
+     cout << endl;
+   }
 }
 
 void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
