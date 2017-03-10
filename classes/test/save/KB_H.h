@@ -18,6 +18,7 @@ public:
 	 // can either print hash or store it in a string
        unordered_multimap<string, fact> hash;
 	 // the hash used to store everything
+       vector<fact> traverseFact(string factName);
 
 };
 

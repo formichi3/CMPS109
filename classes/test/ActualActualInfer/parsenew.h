@@ -29,7 +29,6 @@ class parse{
      // unordered map that stores facts
   vector <string> inferParamNames;
      // stores the param names that are called with infer
-
   // functions
   void checkLine(string x);
      // checks line input
@@ -46,12 +45,16 @@ class parse{
      // about 50% complete
   void drop(string x);
      // drops facts or rules from their respective database
-  vector<vector<string>> inferFact(string p_factName,string newfactname);
+  vector<vector<string>> inferFact(string p_factName,string newfactname, bool doStuff);
      // helper function for infer
-  void inferRule(rule p_ruleName,string newfactname);
+  vector<vector<vector<string>>> inferRule(rule p_ruleName,string newfactname, 
+                                 vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
-  void printSomething(vector<vector<string>> relations);
-  void printSomething3D(vector<vector<vector<string>>> allRelations);
+  void doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  void doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  void printSomething1D(vector<string> oneRelation, int count);
+  void printSomething(vector<vector<string>> relations, int count);
+  void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
 };
 
 #endif

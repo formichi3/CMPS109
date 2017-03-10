@@ -16,7 +16,7 @@ public:
        void add(rule p_item);
        void drop(string p_name);
        string dump();
-       vector<rule> traversRule(string p_name);
+       vector<rule> traverseRule(string p_name);
        unordered_multimap<string, rule> hash;
        //unordered_map<string, rule> hash;
 };

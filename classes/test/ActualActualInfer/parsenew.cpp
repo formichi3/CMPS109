@@ -185,12 +185,12 @@ void parse::infer(string input){      //working
   int money = input.find("$", 0);
   // query holds the name of the rule being inferenced
   string query=input.substr(inferSpace+1,(end1-inferSpace-1));
-  cout<<"inference: "<<query<<endl;
+  //cout<<"inference: "<<query<<endl;
   int endr = input.find("(", inferSpace+1);
   int endparam=input.find(")", 0);
   // token holds the name
   string token=input.substr(end1, (endparam-end1+1));
-  cout<<"testing token "<<token<<endl;
+  //cout<<"testing token "<<token<<endl;
 
   vector <string> params; // params is a vector of parameters
   string parameter; // parameter holds the current parameter
@@ -201,7 +201,7 @@ void parse::infer(string input){      //working
     tail=token.find(",",base);
     if(tail==-1)tail=token.find(")",base);
     parameter = token.substr(base,tail-base);
-    cout<<"parameter: "<<parameter<<endl;
+    //cout<<"parameter: "<<parameter<<endl;
     params.push_back(parameter);
     base=tail+1;
   }
@@ -225,9 +225,12 @@ void parse::infer(string input){      //working
     cout<<"new fact name "<<newfactname<<"---"<<endl;
   }
 
-
+  vector<vector<vector<string>>> big;
   // if query is a fact...
-  if (curKB.hash.find(query) != curKB.hash.end()) { inferFact(query,newfactname); }
+  if (curKB.hash.find(query) != curKB.hash.end()) { 
+     inferFact(query,newfactname,true); 
+     big.clear();  
+  }
   // if query is a rule...
   else if (curRB.hash.find(query) != curRB.hash.end()) {
     // split rules into indices of a vector call one by one
@@ -235,7 +238,10 @@ void parse::infer(string input){      //working
     rules_to_be_inferred = curRB.traverseRule(query);
     for (auto it=rules_to_be_inferred.begin(); it!=rules_to_be_inferred.end(); it++){
       rule newRule = it->substitute(inferParamNames);
-      inferRule(*it,newfactname);
+      //vector<vector<vector<string>>> big;
+      int count = 0;
+      inferRule(*it,newfactname, big, count);
+      big.clear();
     }
     // if query is neither a rule or fact...
   } else { cout<<query<<" is not a fact or rule."<<endl; }
@@ -247,20 +253,27 @@ void parse::infer(string input){      //working
 // }
 
 
-void parse::inferRule(rule p_rule,string newfactname){
+vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname, 
+                               vector<vector<vector<string>>> allRelationships, int count){
+  int operand = p_rule.logOperator;
+  cout<<endl<<"operand:"<<endl;
+  cout<<operand<<endl;
+  //printSomething3D(allRelationships);
+  cout<<"finished"<<endl<<endl;
+  //vector<vector<vector<string>>> allRelationships;
   //cout << endl << p_rule.name << endl << "---------" <<endl;
   string name;
-  int operand = p_rule.logOperator;
   for (auto it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++){
-    vector<vector<vector<string>>> allRelationships;
-    // store name of first predicate
-    name = *it->begin();
+    
+   // store name of first predicate
+   name = *it->begin();
    // search KB for name
    if (curKB.hash.find(name) != curKB.hash.end()) {
      // if found call infer fact
      //vector<vector<string>> relationships;
      //vector<vector<vector<string>>> allRelationships;
-     allRelationships.push_back(inferFact(*it->begin(),newfactname));
+     allRelationships.push_back(inferFact(*it->begin(),newfactname,false));
+     
      auto it2 = allRelationships.end()-1;
      //*it2->insert(it2->begin(), p_rule.args.begin()+1, p_rule.args.end());
 
@@ -269,29 +282,114 @@ void parse::inferRule(rule p_rule,string newfactname){
      for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
       preds.push_back(*it3);
      }
-   
      it2->push_back(preds);
 
    }
    // search the RB for name
    else if (curRB.hash.find(name) != curRB.hash.end()) {
+     count++;
+     // get the Rule object from the hash
      auto R = *(curRB.hash.find(name));
-     // if found call inferRule
-     rule newRule = R.second.substitute(inferParamNames);
-     inferRule(newRule,newfactname);
+     // call substitue to change the variables of the temporary rule
+     //rule newRule = R.second.substitute(inferParamNames);
+     rule newRule = R.second;
+     
+     // call inferRule with this substituted rule (recursion)
+     /*vector<string> preds;
+     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
+     	  preds.push_back(*it3);
+     }
+     printSomething1D(preds);	     
+     */
+     //it2->push_back(preds);   vector<string> r_preds;
+     //for (auto it3 = it->begin()+1; it3!=it->end(); it3++) {
+     //   r_preds.push_back(*it3);
+     //}
+     //auto it2 = allRelationships.begin();
+     //cout<<endl<<endl;
+     //printSomething(*it2);
+     //printSomething3D(allRelationships);
+     //cout<<endl<<endl;
+     //cout << "before" << endl;
+     allRelationships = inferRule(newRule,newfactname,allRelationships, count);
+     //cout << "after" << endl;
+     //printSomething1D(r_preds);
+     //cout << endl;
+     vector <string> preds;
+     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
+          preds.push_back(*it3);
+     }
+     //cout << "preds:"<<endl;
+     //printSomething1D(preds);
+     //cout << endl << "allRelationships:"<<endl;
+     //printSomething3D(allRelationships);
+
+     //cout<<endl<<"test"<<endl;
+     //printSomething(*it2);
+     //printSomething3D(allRelationships);
+     //cout<<endl<<endl;     
+     
+     //it2->push_back(r_preds);
+     //it2++;
+     //it2->push_back(r_preds);
+     //cout << R.second.predicates.size();
+     vector<vector<vector<string>>> temp;
+     // push vars onto the fact list
+     auto it2 = allRelationships.end()-1;
+     for (int count = R.second.predicates.size(); count>0; count--) {  
+	if (R.second.predicates.size()<count) temp.push_back(*it2);
+	it2->push_back(preds);
+	it2--;
+     }
+
+
+     /*cout<<endl<<"Printing temp:"<<endl;
+     printSomething3D(temp);
+     cout<<endl<<endl;*/
+     
+     doOR(temp,newRule,count);
+     
+     /*auto it2 = allRelationships.end()-1;
+     vector<string> preds;
+     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
+      preds.push_back(*it3);
+     }
+     it2->push_back(preds);*/
+
+     //inferRule(newRule,newfactname);
+     //return allRelationships;
    }
    // if name is not in RB or KB print error msg then break
    else {
      cout<<"Rule "<<p_rule.name<<" invalid predicate "<<name<<endl;
      break;
    }
+   
+   
+   /*auto it2 = allRelationships.end()-1;
+   vector<string> preds;
+   for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
+     preds.push_back(*it3);
+   }
+   cout<<endl<<"Hello"<<endl;
+   printSomething1D(preds);
+   cout<<endl<<endl;
+   */
+   //it2->push_back(preds);
+   
+   
    // call OR/swap here
-   printSomething3D(allRelationships);
+   //cout << endl << endl;
+   //printSomething3D(allRelationships);
    
   }
+  cout <<"print 3d vector recursion "<<count<<endl;
+  //doOR(allRelationships, p_rule, count);
+  printSomething3D(allRelationships, count);
+  return allRelationships;
 }
 
-vector<vector<string>> parse::inferFact(string p_factName,string newfactname){
+vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bool doStuff){
   // this vector holds all the relations for a given fact
   vector< vector <string> > relations;
   vector<string> args;
@@ -329,7 +427,8 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname){
       }
     }
   }
-  //printSomething(relations);
+  int count = 0;
+  if (doStuff) printSomething(relations, count);
   return relations;
 }
 
@@ -348,20 +447,69 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname){
    }
 }*/
 
-void parse::printSomething(vector<vector<string>> relations) {
+void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+   cout<<"Doing OR operation"<<endl;
+   cout << p_rule.logOperator<<endl;
+   cout << count <<endl;
+   //printSomething3D(allRelationships, count);
+   vector<vector<string>> result;
+   for (auto i = 0; i < allRelationships.size(); i++){
+      int c = allRelationships[i].size();
+      //int c = count+1;
+      //bool flag = false;
+      //if (c>=count+1) flag=true;
+      for (auto j = 0; j < allRelationships[i].size(); j++){
+	 vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
+	 //if (c>=count+1) flag=true;
+	 //else flag = false;
+	 c--;
+	 //allRelationships[i][allRelationships[i].size()-1].pop_back();
+	 vector<string> relations;
+	 int m = 0;
+	 for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+	    //if (c>=count) flag=true;
+	    //else flag = false;
+	    //if (flag)
+	    //else m++;
+	    //for (int m=0; m<p_rule.args.size(); m++) {
+	    //   if (vars[k]==p_rule.args[m]) 
+	    //cout << p_rule.args[k] << ": " << allRelationships[i][j][k] <<" ";
+	    //}
+	 }
+	 //if (flag) 
+	 //cout << endl;
+      }
+   }
+}
+
+void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+
+
+}
+
+void parse::printSomething1D(vector<string> oneRelation, int count) {
+   for (auto it1 = oneRelation.begin(); it1 != oneRelation.end(); it1++){
+      cout << *it1 << " ";
+   }
+   cout << endl;
+}
+
+void parse::printSomething(vector<vector<string>> relations, int count) {
    for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-      bool flag = false;
+      printSomething1D(*it1, count);
+   }
+    /*  bool flag = false;
       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
 	 cout << *it2 << " ";
          flag = true;
       }
       if (flag) cout<<endl;
-   }
+   }*/
 }
 
-void parse::printSomething3D(vector<vector<vector<string>>> allRelations) {
+void parse::printSomething3D(vector<vector<vector<string>>> allRelations, int count) {
    for (auto it1 = allRelations.begin(); it1 != allRelations.end(); it1++){
-      printSomething(*it1);
+      printSomething(*it1, count);
    }
 }
 
@@ -399,7 +547,6 @@ void parse::printSomething3D(vector<vector<vector<string>>> allRelations) {
 	 cout << *it0 << ": " << *it2;
 	 if (it2 != it1->end()-1) cout << " ";
 	 it0++;
-       }
        cout << endl;
      }
    }
@@ -417,7 +564,7 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
-  p.load("loadinput.sri");
+  p.load("loadinput2.sri");
 
   while(getline(cin,input)&&input!="-1"){
     p.checkLine(input);
