@@ -291,62 +291,19 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      // get the Rule object from the hash
      auto R = *(curRB.hash.find(name));
      // call substitue to change the variables of the temporary rule
-     //rule newRule = R.second.substitute(inferParamNames);
      rule newRule = R.second;
-     
-     // call inferRule with this substituted rule (recursion)
-     /*vector<string> preds;
-     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
-     	  preds.push_back(*it3);
-     }
-     printSomething1D(preds);	     
-     */
-     //it2->push_back(preds);   vector<string> r_preds;
-     //for (auto it3 = it->begin()+1; it3!=it->end(); it3++) {
-     //   r_preds.push_back(*it3);
-     //}
-     //auto it2 = allRelationships.begin();
-     //cout<<endl<<endl;
-     //printSomething(*it2);
-     //printSomething3D(allRelationships);
-     //cout<<endl<<endl;
-     //cout << "before" << endl;
      allRelationships = inferRule(newRule,newfactname,allRelationships, count);
-     //cout << "after" << endl;
-     //printSomething1D(r_preds);
-     //cout << endl;
      vector <string> preds;
      for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
           preds.push_back(*it3);
      }
-     //cout << "preds:"<<endl;
-     //printSomething1D(preds);
-     //cout << endl << "allRelationships:"<<endl;
-     //printSomething3D(allRelationships);
-
-     //cout<<endl<<"test"<<endl;
-     //printSomething(*it2);
-     //printSomething3D(allRelationships);
-     //cout<<endl<<endl;     
-     
-     //it2->push_back(r_preds);
-     //it2++;
-     //it2->push_back(r_preds);
-     //cout << R.second.predicates.size();
      vector<vector<vector<string>>> temp;
-     // push vars onto the fact list
      auto it2 = allRelationships.end()-1;
      for (int count = R.second.predicates.size(); count>0; count--) {  
 	if (R.second.predicates.size()<count) temp.push_back(*it2);
 	it2->push_back(preds);
 	it2--;
      }
-
-
-     /*cout<<endl<<"Printing temp:"<<endl;
-     printSomething3D(temp);
-     cout<<endl<<endl;*/
-     
      doOR(temp,newRule,count);
      
      /*auto it2 = allRelationships.end()-1;
@@ -384,14 +341,14 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
    
   }
   cout <<"print 3d vector recursion "<<count<<endl;
-  //doOR(allRelationships, p_rule, count);
-  printSomething3D(allRelationships, count);
+  doOR(allRelationships, p_rule, count);
+  //printSomething3D(allRelationships, count);
   return allRelationships;
 }
 
 vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bool doStuff){
   // this vector holds all the relations for a given fact
-  vector< vector <string> > relations;
+  vector <vector<string>> relations;
   vector<string> args;
   int inferArgs=inferParamNames.size();//#of inferred args i.e. infer parent(x,y,z) ==3
   //cout<<"vector size: "<<inferArgs<<endl;
@@ -432,21 +389,6 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bo
   return relations;
 }
 
-/*void parse::swapList(vector<vector<vector<string>>> allRelationships, rule p_rule){
-   // loop through predicates
-   for (it = p_rule.predicates.begin(); it != p_rule.predicates.end(); it++) {
-      // loop through predicate arguments
-      for (it2 = it.begin()+1; it2!=it.end(); it2++){
-	 // if argument is found to be matching the 
-	 if (p_rule.args[i]==*it2) {
-	    for (Vit = allRelationships.begin(); Vit!=allRelationships.end(); Vit++){
-	       for (Vit2 = it.begin(); Vit2 = it.end(); Vit2++){
-		  Vit2.push_back(*it2);
-	 else i++;
-      }
-   }
-}*/
-
 void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
    cout<<"Doing OR operation"<<endl;
    cout << p_rule.logOperator<<endl;
@@ -466,23 +408,33 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
 	 //allRelationships[i][allRelationships[i].size()-1].pop_back();
 	 vector<string> relations;
 	 int m = 0;
-	 for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+	 //for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+	    if (vars[0]==p_rule.args[0]) relations.push_back(allRelationships[i][j][0]);
+	    else if(vars[0]==p_rule.args[1]) relations.push_back(allRelationships[i][j][1]);
+	    if (vars[1]==p_rule.args[1]) relations.push_back(allRelationships[i][j][1]);
+	    else if (vars[1]==p_rule.args[0]) relations.push_back(allRelationships[i][j][0]);
 	    //if (c>=count) flag=true;
 	    //else flag = false;
 	    //if (flag)
 	    //else m++;
 	    //for (int m=0; m<p_rule.args.size(); m++) {
 	    //   if (vars[k]==p_rule.args[m]) 
-	    //cout << p_rule.args[k] << ": " << allRelationships[i][j][k] <<" ";
+	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
+	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
 	    //}
-	 }
+	 //}
 	 //if (flag) 
 	 //cout << endl;
+      result.push_back(relations);
       }
    }
+   cout << endl << "Kabboom" << endl;
+   printSomething(result, 0);
+   cout << endl << endl;
 }
 
 void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+   //for (auto i = 0; i < allRelationships.size(); i++){
 
 
 }
