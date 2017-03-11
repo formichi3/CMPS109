@@ -60,6 +60,7 @@ class parse{
   unordered_map<string, vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position);
   //void printMap(unordered_map result2);
   void printMap(unordered_map<string,vector<string>> result2);
+  void addFacts(unordered_map<string, vector <string>> facts, string factName);
 };
 
 #endif
