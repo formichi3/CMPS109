@@ -241,10 +241,11 @@ void parse::infer(string input){      //working
       //vector<vector<vector<string>>> big;
       int count = 0;
       inferRule(*it,newfactname, big, count);
-      big.clear();
+      //big.clear();
     }
     // if query is neither a rule or fact...
   } else { cout<<query<<" is not a fact or rule."<<endl; }
+  big.clear();
 }
 
 // void parse::removeDuplicates(fact r_fact){
@@ -371,7 +372,7 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bo
           if(curArg.substr(0,1)=="$"){  //if args first char is $, it's a free variable. Proceed
           args.push_back(*y);
         }
-        else if(curArg==*y)args.push_back(*y);//check with arg of fact
+        //else if(curArg==*y)args.push_back(*y);//check with arg of fact
         else{                           //inferred arg isn't free and doesn't match fact arg.Stop
           args.clear();
           flag = false;
@@ -393,51 +394,42 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
    cout<<"Doing OR operation"<<endl;
    cout << p_rule.logOperator<<endl;
    cout << count <<endl;
-   //printSomething3D(allRelationships, count);
    vector<vector<string>> result;
    unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size(); i++){
       int c = allRelationships[i].size();
-      //int c = count+1;
-      //bool flag = false;
-      //if (c>=count+1) flag=true;
       for (auto j = 0; j < allRelationships[i].size(); j++){
 	 vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
-	 //if (c>=count+1) flag=true;
-	 //else flag = false;
 	 c--;
-	 //allRelationships[i][allRelationships[i].size()-1].pop_back();
 	 vector<string> relations;
 	 int m = 0;
-	 //for (auto k = 0; k<allRelationships[i][j].size(); k++) {
-	    if (vars[0]==p_rule.args[0]) relations.push_back(allRelationships[i][j][0]);
-	    else if(vars[0]==p_rule.args[1]) relations.push_back(allRelationships[i][j][1]);
-	    if (vars[1]==p_rule.args[1]) relations.push_back(allRelationships[i][j][1]);
-	    else if (vars[1]==p_rule.args[0]) relations.push_back(allRelationships[i][j][0]);
-	    //if (c>=count) flag=true;
-	    //else flag = false;
-	    //if (flag)
-	    //else m++;
-	    //for (int m=0; m<p_rule.args.size(); m++) {
-	    //   if (vars[k]==p_rule.args[m])
-	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
-	    //cout << p_rule.args[0] << ": " << allRelationships[i][j][k] <<" ";
-	    //}
-	 //}
-	 //if (flag)
-	 //cout << endl;
-      result.push_back(relations);
-      string key = "";
-      for(auto it = relations.begin(); it!=relations.end(); it++){
-        key = key + *it;
-      }
-      if (key.at(0)!='$'){
-      result2.insert({key, relations}); //remove "$ chars"
-    }
-
+	 for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+	    for (auto m = 0; m<p_rule.args.size(); m++) {
+	       if (vars[k]==p_rule.args[m]) relations.push_back(allRelationships[i][j][m]);
+	    }
+	 }
+	 result.push_back(relations);
+	 string key = "";
+	 for(auto it = relations.begin(); it!=relations.end(); it++){
+	    key = key + " " + *it;
+	 }
+    //   if (key.at(0)!='$'){
+    //   result2.insert({key, relations});
+    // }
+      result2.insert({key, relations});
       }
    }
+   for (int i = 0; i<inferParamNames.size(); i++){
+      string curArg=inferParamNames[i];
+      if (curArg.substr(0,1)!="$") {
+	 string n = inferParamNames[i];
+	 result2 = searchResults(n,result2);
+      }
+   }
+   printMap(result2);
+}
 
+void parse::printMap(unordered_map<string, vector<string>> result2){
    cout << endl << endl;
    for (auto it2 = result2.begin(); it2 !=result2.end(); it2++){
      for(auto it3 = it2->second.begin(); it3 != it2->second.end(); it3++){

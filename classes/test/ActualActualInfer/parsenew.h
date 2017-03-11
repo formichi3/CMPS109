@@ -59,6 +59,7 @@ class parse{
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
   vector<vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap);
   //void printMap(unordered_map result2);
+  void printMap(unordered_map<string,vector<string>> result2);
 };
 
 #endif
