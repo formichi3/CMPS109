@@ -430,7 +430,18 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
       }
    }
    cout << result2.size() << endl;
+   addFacts(result2, "newFact");
    printMap(result2);
+}
+
+void parse::addFacts(unordered_map<string, vector <string>> facts, string factName){
+  cout << "Adding Facts::::" << endl;
+  for (auto it = facts.begin(); it != facts.end(); it ++){
+    fact newFact(factName, it->second);
+    curKB.add(newFact);
+    curKB.print(true);
+  }
+
 }
 
 void parse::printMap(unordered_map<string, vector<string>> result2){
