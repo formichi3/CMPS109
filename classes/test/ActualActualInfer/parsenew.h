@@ -53,7 +53,7 @@ class parse{
   vector<vector<vector<string>>> inferRule(rule p_ruleName,string newfactname,
                                  vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
-  void doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  vector<vector<string>> doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
   void doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);

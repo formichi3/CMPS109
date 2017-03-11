@@ -225,6 +225,19 @@ void parse::infer(string input){      //working
     newfactname=input.substr(space2,end2-space2);
     cout<<"new fact name "<<newfactname<<"---"<<endl;
   }
+  
+  for (int i=0;i<inferParamNames.size();i++){
+     cout<<inferParamNames[i]<<" ";
+  }
+  cout<<endl;
+  
+  for (int i=0;i<inferParamNames.size();i++){
+  for (int j=0;j<inferParamNames[i].length();j++){
+     cout<<"-";
+   }
+   cout<<" ";
+  }
+  
 
   vector<vector<vector<string>>> big;
   // if query is a fact...
@@ -241,11 +254,13 @@ void parse::infer(string input){      //working
       rule newRule = it->substitute(inferParamNames);
       //vector<vector<vector<string>>> big;
       int count = 0;
+      //doOR(big, p_rule, count)
       inferRule(*it,newfactname, big, count);
       //big.clear();
     }
     // if query is neither a rule or fact...
   } else { cout<<query<<" is not a fact or rule."<<endl; }
+  
   big.clear();
 }
 
@@ -253,10 +268,10 @@ void parse::infer(string input){      //working
 vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
                                vector<vector<vector<string>>> allRelationships, int count){
   int operand = p_rule.logOperator;
-  cout<<endl<<"operand:"<<endl;
-  cout<<operand<<endl;
+  //cout<<endl<<"operand:"<<endl;
+  //cout<<operand<<endl;
   //printSomething3D(allRelationships);
-  cout<<"finished"<<endl<<endl;
+  //cout<<"finished"<<endl<<endl;
   //vector<vector<vector<string>>> allRelationships;
   //cout << endl << p_rule.name << endl << "---------" <<endl;
   string name;
@@ -298,20 +313,13 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      auto it2 = allRelationships.end()-1;
      for (int count = R.second.predicates.size(); count>0; count--) {
 	if (R.second.predicates.size()<count) temp.push_back(*it2);
-	it2->push_back(preds);
+	//it2->push_back(preds);
 	it2--;
      }
-     doOR(temp,newRule,count);
-
-     /*auto it2 = allRelationships.end()-1;
-     vector<string> preds;
-     for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
-      preds.push_back(*it3);
-     }
-     it2->push_back(preds);*/
-
-     //inferRule(newRule,newfactname);
-     //return allRelationships;
+     allRelationships.push_back(doOR(temp,newRule,count));
+     it2 = allRelationships.end()-1;
+     it2->push_back(preds);
+     
    }
    // if name is not in RB or KB print error msg then break
    else {
@@ -319,27 +327,10 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
      break;
    }
 
-
-   /*auto it2 = allRelationships.end()-1;
-   vector<string> preds;
-   for(auto it3 = it->begin()+1; it3!=it->end(); it3++){
-     preds.push_back(*it3);
-   }
-   cout<<endl<<"Hello"<<endl;
-   printSomething1D(preds);
-   cout<<endl<<endl;
-   */
-   //it2->push_back(preds);
-
-
-   // call OR/swap here
-   //cout << endl << endl;
-   //printSomething3D(allRelationships);
-
   }
-  cout <<"print 3d vector recursion "<<count<<endl;
-  doOR(allRelationships, p_rule, count);
-  //printSomething3D(allRelationships, count);
+  //cout <<"print 3d vector recursion "<<count<<endl;
+  if (operand==0) allRelationships.push_back(doOR(allRelationships, p_rule, count));
+  else printSomething3D(allRelationships, count);
   return allRelationships;
 }
 
@@ -386,10 +377,10 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bo
   return relations;
 }
 
-void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
-   cout<<"Doing OR operation"<<endl;
-   cout << p_rule.logOperator<<endl;
-   cout << count <<endl;
+vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+   //cout<<"Doing OR operation"<<endl;
+   //cout << p_rule.logOperator<<endl;
+   //cout << count <<endl;
    vector<vector<string>> result;
    unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size(); i++){
@@ -409,10 +400,11 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
 	 for(auto it = relations.begin(); it!=relations.end(); it++){
 	    key = key + " " + *it;
 	 }
-    //   if (key.at(0)!='$'){
-    //   result2.insert({key, relations});
-    // }
-      result2.insert({key, relations});
+	 //cout << "Key at 0: " << key <<endl;
+         if (key.at(1)!='$'){
+            result.push_back(relations);
+	    result2.insert({key, relations});
+	 }
       }
    }
    for (int i = 0; i<inferParamNames.size(); i++){
@@ -425,6 +417,7 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
    string s = newfactname;
    if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
    printMap(result2);
+   return result;
 }
 
 void parse::addFacts(unordered_map<string, vector <string>> facts, string factName){
