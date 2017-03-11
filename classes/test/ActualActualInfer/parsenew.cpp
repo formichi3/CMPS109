@@ -439,7 +439,6 @@ void parse::printMap(unordered_map<string, vector<string>> result2){
      for(auto it3 = it2->second.begin(); it3 != it2->second.end(); it3++){
        cout << *it3 << " ";
      }
-
      cout << endl;
    }
 }
