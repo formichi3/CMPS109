@@ -423,7 +423,7 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
       string curArg=inferParamNames[i];
       if (curArg.substr(0,1)!="$") {
 	 string n = inferParamNames[i];
-	 result2 = searchResults(n,result2);
+	 //result2 = searchResults(n,result2);
       }
    }
    printMap(result2);
@@ -441,9 +441,46 @@ void parse::printMap(unordered_map<string, vector<string>> result2){
 }
 
 void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
-   //for (auto i = 0; i < allRelationships.size(); i++){
-
-
+   cout<<"Doing AND operation"<<endl;
+   cout << p_rule.logOperator<<endl;
+   cout << count <<endl;
+   vector<vector<string>> result;
+   unordered_map<string, vector<string>> result2;
+   for (auto i = 0; i < allRelationships.size(); i++){
+      int c = allRelationships[i].size();
+      for (auto j = 0; j < allRelationships[i].size(); j++){
+         vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
+         c--;
+         vector<string> relations;
+         int m = 0;
+         for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+            //relations.push_back(allRelationships[i][j][k]);
+	    int mew = 0;
+	    for (auto m = 0; m<p_rule.args.size(); m++) {
+               if (vars[k]==p_rule.args[m]) //relations.push_back(allRelationships[i][j][m]);
+		  mew++;
+	    }
+	    
+         }
+         result.push_back(relations);
+         string key = "";
+         for(auto it = relations.begin(); it!=relations.end(); it++){
+            key = key + " " + *it;
+         }
+    //   if (key.at(0)!='$'){
+    //   result2.insert({key, relations});
+    // }
+      result2.insert({key, relations});
+      }
+   }
+   for (int i = 0; i<inferParamNames.size(); i++){
+      string curArg=inferParamNames[i];
+      if (curArg.substr(0,1)!="$") {
+         string n = inferParamNames[i];
+         //result2 = searchResults(n,result2);
+      }
+   }
+   printMap(result2);
 }
 
 void parse::printSomething1D(vector<string> oneRelation, int count) {

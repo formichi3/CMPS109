@@ -22,7 +22,7 @@ class parse{
 
  private:
   int inputSize;
-
+  int newfactname;
  public:
   // databases
   RB curRB;
