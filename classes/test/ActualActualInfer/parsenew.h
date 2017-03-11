@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <unordered_map>
 #include <algorithm>
 #include <utility>
 #include <iostream>
@@ -48,7 +49,7 @@ class parse{
      // drops facts or rules from their respective database
   vector<vector<string>> inferFact(string p_factName,string newfactname, bool doStuff);
      // helper function for infer
-  vector<vector<vector<string>>> inferRule(rule p_ruleName,string newfactname, 
+  vector<vector<vector<string>>> inferRule(rule p_ruleName,string newfactname,
                                  vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
   void doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
@@ -56,6 +57,9 @@ class parse{
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
+  vector<vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap);
+  //void printMap(unordered_map result2);
+  void printMap(unordered_map<string,vector<string>> result2);
 };
 
 #endif

@@ -26,6 +26,7 @@ class parse{
   void dump(string x);
   void infer(string x);
   void drop(string x);
+  vector<vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap);
 
 };
 
