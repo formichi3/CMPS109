@@ -1,6 +1,7 @@
 //#include "../fact/Fact_H.h"
 #include "parsenew.h"
-//#include <unordered_map>
+#include <unordered_map>
+#include <typeinfo>
 
 using namespace std;
 
@@ -421,9 +422,12 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
    }
    for (int i = 0; i<inferParamNames.size(); i++){
       string curArg=inferParamNames[i];
-      if (curArg.substr(0,1)!="$") {
-	 string n = inferParamNames[i];
-	 result2 = searchResults(n,result2);
+      cout << "we outcheeyyaa" << endl;
+      if (curArg.at(0)!='$') {
+        cout << "we not outcheeyyaa" << endl;
+        result2.clear();
+        string n = inferParamNames[i];
+        result2 = searchResults(n,result2);
       }
    }
    printMap(result2);
@@ -518,8 +522,10 @@ void parse::drop(string input){
   curRB.drop(name);
 }
 
-vector<vector<string>> parse::searchResults(string searchName, unordered_map<string, vector<string>> searchMap){
+unordered_map<string, vector<string>> parse::searchResults(string searchName, unordered_map<string, vector<string>> searchMap){
+  unordered_map<string, vector<string>> result2;
   vector<vector<string>> result;
+  string key = "";
   for (auto it = searchMap.begin(); it != searchMap.end(); it++){
     for (auto it2 = it->second.begin(); it2 != it->second.end(); it2++){
       if (*it2 == searchName){
@@ -527,7 +533,14 @@ vector<vector<string>> parse::searchResults(string searchName, unordered_map<str
       }
     }
   }
-  return result;
+  for (auto it = result.begin(); it != result.end(); it++){
+    for (auto it2 = it->begin(); it2 != it->end(); it2 ++){
+      key = key + *it2;
+    }
+    cout << "***********" << typeid(key).name() << endl;
+    result2.insert({key, *it});
+  }
+  return result2;
 }
 
 int main(){
