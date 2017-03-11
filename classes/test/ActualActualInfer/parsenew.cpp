@@ -370,7 +370,7 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bo
       if (flag) {
         for( auto y = x->second.paramaters.begin(); (y != x->second.paramaters.end()&&counter<inferArgs); y++){
           string curArg=inferParamNames[counter];//first args of inferred args
-          if(curArg.substr(0,1)=="$"){  //if args first char is $, it's a free variable. Proceed
+          if(1/*curArg.substr(0,1)=="$"*/){  //if args first char is $, it's a free variable. Proceed
           args.push_back(*y);
         }
         //else if(curArg==*y)args.push_back(*y);//check with arg of fact
@@ -425,11 +425,11 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
       cout << "we outcheeyyaa" << endl;
       if (curArg.at(0)!='$') {
         cout << "we not outcheeyyaa" << endl;
-        result2.clear();
         string n = inferParamNames[i];
-        result2 = searchResults(n,result2);
+        result2 = searchResults(n,result2,i);
       }
    }
+   cout << result2.size() << endl;
    printMap(result2);
 }
 
@@ -558,22 +558,20 @@ void parse::drop(string input){
   curRB.drop(name);
 }
 
-unordered_map<string, vector<string>> parse::searchResults(string searchName, unordered_map<string, vector<string>> searchMap){
+unordered_map<string, vector<string>> parse::searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position){
   unordered_map<string, vector<string>> result2;
   vector<vector<string>> result;
   string key = "";
   for (auto it = searchMap.begin(); it != searchMap.end(); it++){
-    for (auto it2 = it->second.begin(); it2 != it->second.end(); it2++){
-      if (*it2 == searchName){
-        result.push_back(it->second);
-      }
+    auto strings = it->second;
+    if (strings[position] == searchName){
+      result.push_back(it->second);
     }
   }
   for (auto it = result.begin(); it != result.end(); it++){
     for (auto it2 = it->begin(); it2 != it->end(); it2 ++){
       key = key + *it2;
     }
-    cout << "***********" << typeid(key).name() << endl;
     result2.insert({key, *it});
   }
   return result2;
