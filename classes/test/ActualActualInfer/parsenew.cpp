@@ -249,11 +249,6 @@ void parse::infer(string input){      //working
   big.clear();
 }
 
-// void parse::removeDuplicates(fact r_fact){
-//
-//
-// }
-
 
 vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
                                vector<vector<vector<string>>> allRelationships, int count){
@@ -506,13 +501,6 @@ void parse::printSomething(vector<vector<string>> relations, int count) {
    for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
       printSomething1D(*it1, count);
    }
-    /*  bool flag = false;
-      for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-	 cout << *it2 << " ";
-         flag = true;
-      }
-      if (flag) cout<<endl;
-   }*/
 }
 
 void parse::printSomething3D(vector<vector<vector<string>>> allRelations, int count) {
@@ -521,44 +509,6 @@ void parse::printSomething3D(vector<vector<vector<string>>> allRelations, int co
    }
 }
 
-/*void parse::traverseList(vector<vector<string>> relations, rule p_rule){
-   for (it = inferParamNames.begin(); it != inferParamNames.end(); it++) {
-      if p_rule
-*/
-
-   /*if(newfactname!=""){
-     cout<<"creating facts with name "<<newfactname<<endl;
-
-     // this double loop is reserved for printing the relationships
-     cout << endl << p_factName << ":" << endl;
-     for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-       auto it0 = inferParamNames.begin();
-       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-	 cout << *it0 << ": " << *it2;
-	 args.push_back(*it2);
-
-	 if (it2 != it1->end()-1) cout << " ";
-	 it0++;
-       }
-       cout << endl;
-       fact newFact(newfactname,args);
-       curKB.add(newFact);
-       args.clear();
-     }
-   }
-   else{
-     // this double loop is reserved for printing the relationships
-     cout << endl << p_factName << ":" << endl;
-     for (auto it1 = relations.begin(); it1 != relations.end(); it1++){
-       auto it0 = inferParamNames.begin();
-       for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-	 cout << *it0 << ": " << *it2;
-	 if (it2 != it1->end()-1) cout << " ";
-	 it0++;
-       cout << endl;
-     }
-   }
-}*/
 
 void parse::drop(string input){
   int end = input.find("\n",0);
