@@ -209,7 +209,7 @@ void parse::infer(string input){      //working
 
   inferParamNames = params;
 
-  string newfactname="";
+  newfactname="";
   int end=input.find(")" , 0);
   int zerocheck=0;
   for(int i=end+1;i<inputSize;i++){
@@ -422,15 +422,13 @@ void parse::doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, i
    }
    for (int i = 0; i<inferParamNames.size(); i++){
       string curArg=inferParamNames[i];
-      cout << "we outcheeyyaa" << endl;
       if (curArg.at(0)!='$') {
-        cout << "we not outcheeyyaa" << endl;
         string n = inferParamNames[i];
         result2 = searchResults(n,result2,i);
       }
    }
-   cout << result2.size() << endl;
-   addFacts(result2, "newFact");
+   string s = newfactname;
+   if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
    printMap(result2);
 }
 

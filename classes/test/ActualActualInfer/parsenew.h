@@ -22,8 +22,9 @@ class parse{
 
  private:
   int inputSize;
-  int newfactname;
  public:
+  // vars
+  string newfactname;
   // databases
   RB curRB;
      // unordered map that stores rules
