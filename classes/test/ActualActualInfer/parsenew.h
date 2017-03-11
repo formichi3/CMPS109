@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <unordered_map>
 #include <algorithm>
 #include <utility>
 #include <iostream>
@@ -56,6 +57,7 @@ class parse{
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
+  //void printMap(unordered_map result2);
 };
 
 #endif
