@@ -231,13 +231,6 @@ void parse::infer(string input){      //working
   }
   cout<<endl;
   
-  for (int i=0;i<inferParamNames.size();i++){
-  for (int j=0;j<inferParamNames[i].length();j++){
-     cout<<"-";
-   }
-   cout<<" ";
-  }
-  
 
   vector<vector<vector<string>>> big;
   // if query is a fact...
@@ -330,7 +323,7 @@ vector<vector<vector<string>>> parse::inferRule(rule p_rule,string newfactname,
   }
   //cout <<"print 3d vector recursion "<<count<<endl;
   if (operand==0) allRelationships.push_back(doOR(allRelationships, p_rule, count));
-  else printSomething3D(allRelationships, count);
+  else doAND(allRelationships, p_rule, count);  //printSomething3D(allRelationships, count);
   return allRelationships;
 }
 
@@ -356,16 +349,20 @@ vector<vector<string>> parse::inferFact(string p_factName,string newfactname, bo
       if (flag) {
         for( auto y = x->second.paramaters.begin(); (y != x->second.paramaters.end()&&counter<inferArgs); y++){
           string curArg=inferParamNames[counter];//first args of inferred args
-          if(1/*curArg.substr(0,1)=="$"*/){  //if args first char is $, it's a free variable. Proceed
-          args.push_back(*y);
-        }
-        //else if(curArg==*y)args.push_back(*y);//check with arg of fact
-        else{                           //inferred arg isn't free and doesn't match fact arg.Stop
-          args.clear();
-          flag = false;
-          break;   //stop adding fact
-        }
-        counter++; //move forward to next inferred arg
+          if (doStuff) {
+	     if(curArg.substr(0,1)=="$"){  //if args first char is $, it's a free variable. Proceed
+	       args.push_back(*y);
+	     }
+	     else if(curArg==*y)args.push_back(*y);//check with arg of fact
+	     else{                           //inferred arg isn't free and doesn't match fact arg.Stop
+	       args.clear();
+	       flag = false;
+	       break;   //stop adding fact
+	     }
+	  } else {
+	     args.push_back(*y);
+	  }
+          counter++; //move forward to next inferred arg
         }
         relations.push_back(args);
         args.clear();
@@ -444,22 +441,31 @@ void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, 
    cout<<"Doing AND operation"<<endl;
    cout << p_rule.logOperator<<endl;
    cout << count <<endl;
+   
+  
+   
+   
+   
    vector<vector<string>> result;
    unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size(); i++){
       int c = allRelationships[i].size();
       for (auto j = 0; j < allRelationships[i].size(); j++){
-         vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
-         c--;
+         //for (int x = 0; x < 
+	 vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
+         
+	 c--;
          vector<string> relations;
-         int m = 0;
          for (auto k = 0; k<allRelationships[i][j].size(); k++) {
             //relations.push_back(allRelationships[i][j][k]);
-	    int mew = 0;
+	    //itemsPerVar.push_back(vars[k]);
+	    relations.push_back(allRelationships[i][j][k]);
+	       
+	    /*int mew = 0;
 	    for (auto m = 0; m<p_rule.args.size(); m++) {
                if (vars[k]==p_rule.args[m]) //relations.push_back(allRelationships[i][j][m]);
 		  mew++;
-	    }
+	    }*/
 	    
          }
          result.push_back(relations);
@@ -473,13 +479,13 @@ void parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, 
       result2.insert({key, relations});
       }
    }
-   for (int i = 0; i<inferParamNames.size(); i++){
+   /*for (int i = 0; i<inferParamNames.size(); i++){
       string curArg=inferParamNames[i];
       if (curArg.substr(0,1)!="$") {
          string n = inferParamNames[i];
          //result2 = searchResults(n,result2);
       }
-   }
+   }*/
    printMap(result2);
 }
 
