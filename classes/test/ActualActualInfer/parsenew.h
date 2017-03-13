@@ -50,11 +50,12 @@ class parse{
      // drops facts or rules from their respective database
   vector<vector<string>> inferFact(string p_factName,string newfactname, bool doStuff);
      // helper function for infer
-  vector<vector<vector<string>>> inferRule(rule p_ruleName,string newfactname,
+  vector<vector<string>> inferRule(rule p_ruleName,string newfactname,
                                  vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
   vector<vector<string>> doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
-  void doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  vector<vector<string>> mapToVector(unordered_map <string,vector<string>> relations);
+  vector<vector<string>> doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
