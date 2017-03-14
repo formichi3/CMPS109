@@ -56,10 +56,12 @@ class parse{
   vector<vector<string>> doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
   vector<vector<string>> mapToVector(unordered_map <string,vector<string>> relations);
   vector<vector<string>> doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  vector<vector<string>> doAND0(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
   unordered_map<string, vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position);
+  vector<string> searchResultsVector(string searchName, vector<vector<string>> searchVector, int position);
   //void printMap(unordered_map result2);
   void printMap(unordered_map<string,vector<string>> result2);
   void addFacts(unordered_map<string, vector <string>> facts, string factName);

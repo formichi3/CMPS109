@@ -505,6 +505,126 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
    vector<vector<string>> result;
    result.clear();
    unordered_map<string, vector<string>> result2;
+   for (auto i = 0; i < allRelationships.size()-1; i++){
+      int c = allRelationships[i].size();
+      bool flag = false;
+      for (auto j = 0; j < allRelationships[i].size(); j++){
+         vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
+         c--;
+         vector<string> relations;
+         int m = 0;
+         //bool flag = false;
+	 for (auto k = 0; k<allRelationships[i][j].size(); k++) {
+            //cout<<allRelationships[i][allRelationships[i].size()-1][k]<<endl;
+            // loop through variables
+	    for (auto z=1; (i+z)<allRelationships.size(); z++) {
+	    //bool flag = false;
+	       for (auto h=0; h<allRelationships[i][j].size(); h++){
+		  // check if a variable equals one in the next predicate
+		  if(allRelationships[i][allRelationships[i].size()-1][k]==allRelationships[i+z][allRelationships[i+z].size()-1][h]){
+		     cout<<allRelationships[i][allRelationships[i].size()-1][k]<<" equals "<<allRelationships[i+z][allRelationships[i+z].size()-1][h]<<endl;
+		     // if so loop through the facts per variable by going through the columns at a
+		     //bool print = false;
+		     for (auto a=0; a<allRelationships[i].size(); a++) {
+			//result2=(searchResults(allRelations[i][a][k], someMap, h); 
+			bool print = false;
+			for (auto b=0; b<allRelationships[i+z].size(); b++) {
+			   if (allRelationships[i][a][k]==allRelationships[i+z][b][h]) {
+			      cout<<allRelationships[i][a][k]<<" equals 2 "<<allRelationships[i+z][b][h]<<endl;
+			      //relations.push_back(allRelationships[i][a][k]);
+			      //for (int c=0; c<allRelationships[i+1][b].size(); c++){
+				 //relations.push_back(allRelationships[i][b][k];
+				 //relations.push_back(allRelationships[i+1][b][c]);
+			      //}
+			      relations=(allRelationships[i+z][b]);
+			      auto it = relations.begin();
+			      relations.insert(it,allRelationships[i][a][0]);
+			      flag = true;
+			      print = true;
+			   }
+			   if (print) { 
+			      cout<<"how many times"<<endl;
+			   //if (print) cout
+			      result.push_back(relations);
+			      string key = "";
+			      for(auto it2 = relations.begin(); it2!=relations.end(); it2++){
+          		         key = key + " " + *it2;
+         		      }
+			      result2.insert({key,relations});
+			   }
+			   print = false;
+			}
+			//if (flag) break;  
+		     }
+		     //if (flag) break;
+		  }
+		  //if (flag) break;
+	       }
+	       //if (flag) break;
+
+	    }
+            //OLD adds everything
+            //cout<<endl<<"adding "<<allRelationships[i][j][k]<<endl;
+	    //relations.push_back(allRelationships[i][j][k]);
+          
+	 }
+	 //if (flag) break;
+	 /*
+	 cout<<"HERE"<<endl;
+         //result.push_back(relations);
+         string key = "";
+         for(auto it = relations.begin(); it!=relations.end(); it++){
+            key = key + " " + *it;
+         }
+	 cout<<"Here 4"<<endl;
+         //cout << "Key at 0: " << key <<endl;
+         if (key.at(1)!='$'){
+            result.push_back(relations);
+            result2.insert({key, relations});
+         }
+	 cout<<"Here 6"<<endl;*/
+         
+      }
+      //if (flag) break;
+      //cout<<"Here 5"<<endl;
+   }
+   //cout<<"Here 3"<<endl;
+   /*for (int i = 0; i<inferParamNames.size(); i++){
+      string curArg=inferParamNames[i];
+      if (curArg.at(0)!='$') {
+        string n = inferParamNames[i];
+        result2 = searchResults(n,result2,i);
+      }
+   }*/
+   //string s = newfactname;
+   //if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
+   /*cout<<endl<<"result2"<<endl;
+   printMap(result2);
+   cout<<endl<<"result"<<endl;
+   printSomething(result, 0);
+   cout<<endl<<endl;*/
+   //result = mapToVector(result2);
+   cout<<endl<<"And result"<<endl;
+   printMap(result2);
+   cout<<endl<<"And result above"<<endl;
+   result = mapToVector(result2);
+   return result;
+}
+
+
+
+vector<vector<string>> parse::doAND0(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+   cout<<"Doing AND2 operation"<<endl;
+   //cout << p_rule.logOperator<<endl;
+   //cout << count <<endl;
+
+   cout<<endl<<"or passed vector"<<endl;
+   printSomething3D(allRelationships,0);
+   cout<<endl<<"done"<<endl;
+
+   vector<vector<string>> result;
+   result.clear();
+   unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size(); i++){
       int c = allRelationships[i].size();
       for (auto j = 0; j < allRelationships[i].size(); j++){
@@ -513,27 +633,10 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
          vector<string> relations;
          int m = 0;
          for (auto k = 0; k<allRelationships[i][j].size(); k++) {
-         
-	    //IMPORTANT
-            /* iterate through lowest vector
-            for (int h=0; i<allRelationships[i][j+1].size(); h++) {
-               // if the var of one list is equal to a var on the other list
-               if (allRelationships[i][allRelationships[i].size()-1][k]
-                  ==allRelationships[i+1][allRelationships[i+1].size()-1][h]) {
-                  // loop through that list
-                  for (int a=0; a<allRelationships[i+1].size(); a++) {
-                     for (int b=0; b<allRelationships[i+1][j].size(); b++);
-                        // if the value in the first list is equal to the value at the particular point in the second list
-                        if (allRelationships[i][a][k] = allRelationships[i][b][k]) {
-                           relations.push_back(
-            */
-
-
-            //OLD adds everything
-            //cout<<endl<<"adding "<<allRelationships[i][j][k]<<endl;
-	    relations.push_back(allRelationships[i][j][k]);
-          
-	 }
+            for (auto m = 0; m<p_rule.args.size(); m++) {
+               if (vars[k]==p_rule.args[m]) relations.push_back(allRelationships[i][j][m]);
+            }
+         }
          //result.push_back(relations);
          string key = "";
          for(auto it = relations.begin(); it!=relations.end(); it++){
@@ -555,85 +658,16 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
    }
    string s = newfactname;
    if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
-   /*cout<<endl<<"result2"<<endl;
+   /*cout<<endl<<"or result2"<<endl;
    printMap(result2);
-   cout<<endl<<"result"<<endl;
+   cout<<endl<<"or result"<<endl;
    printSomething(result, 0);
    cout<<endl<<endl;*/
-   //result = mapToVector(result2);
+   result = mapToVector(result2);
    return result;
 }
 
 
-
-
-
-
-/*
-vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
-   cout<<"Doing AND operation"<<endl;
-   cout << p_rule.logOperator<<endl;
-   cout << count <<endl;
-   
-   vector<vector<string>> result;
-   unordered_map<string, vector<string>> result2;
-   for (auto i = 0; i < allRelationships.size(); i++){
-      int c = allRelationships[i].size();
-      for (auto j = 0; j < allRelationships[i].size(); j++){
-         //for (int x = 0; x < 
-	 vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
-	 c--;
-         vector<string> relations;
-         for (auto k = 0; k<allRelationships[i][j].size(); k++) {
-            //relations.push_back(allRelationships[i][j][k]);
-	    //itemsPerVar.push_back(vars[k]);
-	    
-	    //IMPORTANT
-	    /* iterate through lowest vector
-	    for (int h=0; i<allRelationships[i][j+1].size(); h++) {   
-	       // if the var of one list is equal to a var on the other list
-	       if (allRelationships[i][allRelationships[i].size()-1][k]
-		  ==allRelationships[i+1][allRelationships[i+1].size()-1][h]) {
-		  // loop through that list
-		  for (int a=0; a<allRelationships[i+1].size(); a++) {
-		     for (int b=0; b<allRelationships[i+1][j].size(); b++);
-			// if the value in the first list is equal to the value at the particular point in the second list
-			if (allRelationships[i][a][k] = allRelationships[i][b][k]) {
-			   relations.push_back(
-            
-		  	  
-	    
-	    //OLD adds everything
-	    relations.push_back(allRelationships[i][j][k]);
-	       
-	    /*int mew = 0;
-	    for (auto m = 0; m<p_rule.args.size(); m++) {
-               if (vars[k]==p_rule.args[m]) //relations.push_back(allRelationships[i][j][m]);
-		  mew++;
-	    }
-	    
-         }
-         result.push_back(relations);
-         string key = "";
-         for(auto it = relations.begin(); it!=relations.end(); it++){
-            key = key + " " + *it;
-         }
-    //   if (key.at(0)!='$'){
-    //   result2.insert({key, relations});
-    // }
-      result2.insert({key, relations});
-      }
-   }
-   /*for (int i = 0; i<inferParamNames.size(); i++){
-      string curArg=inferParamNames[i];
-      if (curArg.substr(0,1)!="$") {
-         string n = inferParamNames[i];
-         //result2 = searchResults(n,result2);
-      }
-   }
-   printMap(result2);
-}
-*/
 
 void parse::printSomething1D(vector<string> oneRelation, int count) {
    for (auto it1 = oneRelation.begin(); it1 != oneRelation.end(); it1++){
@@ -679,6 +713,18 @@ unordered_map<string, vector<string>> parse::searchResults(string searchName, un
     result2.insert({key, *it});
   }
   return result2;
+}
+
+vector<string> parse::searchResultsVector(string searchName, vector<vector<string>> searchVector, int position) {
+   vector<string> relation;
+   for (int i=0; i<searchVector.size(); i++) {
+      for (int j=0; j<searchVector[i].size(); j++) {
+	 if (searchVector[i][j] == searchName) {
+            //relation = searchVector[i][j];
+	    return relation;
+	 }
+      }
+   }
 }
 
 int main(){
