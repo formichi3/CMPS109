@@ -354,7 +354,7 @@ vector<vector<string>> parse::inferRule(rule p_rule,string newfactname,
      // allRelationships.clear();
      printRelationships=(doOR(allRelationships, p_rule, count));
   } else {
-     printRelationships=(doAND(allRelationships, p_rule, count));  //printSomething3D(allRelationships, count);
+     printRelationships=(doAND(allRelationships, p_rule, count,true));  //printSomething3D(allRelationships, count);
   }
   /*cout<<endl<<"ALL RELATIONSHIPS"<<endl;
   printSomething3D(allRelationships, 0);
@@ -416,9 +416,9 @@ vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationshi
    //cout << p_rule.logOperator<<endl;
    //cout << count <<endl;
    
-   cout<<endl<<"or passed vector"<<endl;
-   printSomething3D(allRelationships,0);
-   cout<<endl<<"done"<<endl;
+   //cout<<endl<<"or passed vector"<<endl;
+   //printSomething3D(allRelationships,0);
+   //cout<<endl<<"done"<<endl;
    
    vector<vector<string>> result;
    result.clear();
@@ -455,7 +455,7 @@ vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationshi
       }
    }
    string s = newfactname;
-   if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
+   if (newfactname != "") {addFacts(result2, newfactname);}
    /*cout<<endl<<"or result2"<<endl;
    printMap(result2);
    cout<<endl<<"or result"<<endl;
@@ -466,6 +466,14 @@ vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationshi
 }
 
 vector<vector<string>> parse::mapToVector(unordered_map <string,vector<string>> relations) {
+   vector<vector<string>> result;
+   for (auto it = relations.begin(); it != relations.end(); it ++){
+      result.push_back(it->second);
+   }
+   return result;
+}
+
+vector<vector<string>> parse::mapToVector2(map <string,vector<string>> relations) {
    vector<vector<string>> result;
    for (auto it = relations.begin(); it != relations.end(); it ++){
       result.push_back(it->second);
@@ -493,8 +501,19 @@ void parse::printMap(unordered_map<string, vector<string>> result2){
    }
 }
 
+void parse::printMap2(map<string, vector<string>> result2){
+   cout << endl << endl;
+   for (auto it2 = result2.begin(); it2 !=result2.end(); it2++){
+     for(auto it3 = it2->second.begin(); it3 != it2->second.end(); it3++){
+       cout << *it3 << " ";
+     }
+     cout << endl;
+   }
+}
 
-vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
+
+vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count, bool first) {
+   if (first) predicates = p_rule.predicates.size();
    cout<<"Doing AND operation"<<endl;
    //cout << p_rule.logOperator<<endl;
    //cout << count <<endl;
@@ -503,75 +522,177 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
    cout<<endl<<endl;
    
    vector<vector<string>> result;
+   vector<vector<vector<string>>> bigResult;
+   map<string,vector<string>> mapResult;
+   
    result.clear();
    unordered_map<string, vector<string>> result2;
    for (auto i = 0; i < allRelationships.size()-1; i++){
       int c = allRelationships[i].size();
       bool flag = false;
+      //int count =0;
+      // loop through middle vector of vectors
       for (auto j = 0; j < allRelationships[i].size(); j++){
          vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
          c--;
-         vector<string> relations;
          int m = 0;
-         //bool flag = false;
+	 // loop through innermost vector of strings
 	 for (auto k = 0; k<allRelationships[i][j].size(); k++) {
             //cout<<allRelationships[i][allRelationships[i].size()-1][k]<<endl;
-            // loop through variables
+            // loop through predicates
 	    for (auto z=1; (i+z)<allRelationships.size(); z++) {
-	    //bool flag = false;
+	       //cout<<"Z loop " <<(z)<<endl;
+	       //bool flag = false;
+	       // loop through variables in each predicate vector
+	       //int count=0;
 	       for (auto h=0; h<allRelationships[i][j].size(); h++){
-		  // check if a variable equals one in the next predicate
+		  // check if a variable equals one in the following predicates
+		  int count=0;
 		  if(allRelationships[i][allRelationships[i].size()-1][k]==allRelationships[i+z][allRelationships[i+z].size()-1][h]){
-		     cout<<allRelationships[i][allRelationships[i].size()-1][k]<<" equals "<<allRelationships[i+z][allRelationships[i+z].size()-1][h]<<endl;
-		     // if so loop through the facts per variable by going through the columns at a
+		     /*
+		     cout<<allRelationships[i][allRelationships[i].size()-1][k]
+		     <<" pred:"<<i<<" elem:"<<k<<" equals "
+		     <<allRelationships[i+z][allRelationships[i+z].size()-1][h]
+		     <<" pred:"<<i+z<<" elem:"<<h<<endl;
+		     */
+		     // if so loop through the facts per variable by going through the columns at the first predicate
 		     //bool print = false;
+		     
 		     for (auto a=0; a<allRelationships[i].size(); a++) {
 			//result2=(searchResults(allRelations[i][a][k], someMap, h); 
 			bool print = false;
+			bool print1 = false;
+			// loop through the facts per variable at the other predicate
+			vector<string> relations;
 			for (auto b=0; b<allRelationships[i+z].size(); b++) {
 			   if (allRelationships[i][a][k]==allRelationships[i+z][b][h]) {
-			      cout<<allRelationships[i][a][k]<<" equals 2 "<<allRelationships[i+z][b][h]<<endl;
+			      //cout<<allRelationships[i][a][k]<<" pred:"<<i<<" col:"<<a<<" elem:"<<k<<
+			      //" equals 2 "<<allRelationships[i+z][b][h]<<" pred:"<<i+z<<" col:"<<b<<" elem:"<<h<<endl;
 			      //relations.push_back(allRelationships[i][a][k]);
-			      //for (int c=0; c<allRelationships[i+1][b].size(); c++){
-				 //relations.push_back(allRelationships[i][b][k];
-				 //relations.push_back(allRelationships[i+1][b][c]);
-			      //}
-			      relations=(allRelationships[i+z][b]);
+			      relations.push_back(allRelationships[i][a][0]);
+			      for (int c=0; c<allRelationships[i+z][b].size(); c++){
+				 //relations.push_back(allRelationships[i][a][0]);
+				 relations.push_back(allRelationships[i+z][b][c]);
+				 //for(int p=0; p<allRelationships.size(); p++){
+				   // if allRelationshi
+				 
+				 //cout<<"GETTING PUSHED BACK: "<<allRelationships[i+z][b][c]<<endl;
+				 //relations.push_back(allRelationships[i][a][0]);
+			      }
+
+			      /*
+			      auto it =relations.begin();
+			      relations.insert(it,allRelationships[i][a][0]);
+			      */
+
+			      //WORKING to done
+			      //relations=(allRelationships[i+z][b]);
+			      //cout<<"relations pre"<<endl;
+			      //printSomething1D(relations,0);
+			      //int count=0;
+			      //IMPORTANT
+			      /*
+			      cout<<"RELATIONS"<<endl;
+			      printSomething1D(relations,0);
+			      cout<<"DONE"<<endl;
 			      auto it = relations.begin();
 			      relations.insert(it,allRelationships[i][a][0]);
+			      */
+			      //cout<<"relations post"<<endl;
+			      //printSomething1D(relations,0);
+			      //DONE
+			      
+			      //ALSO IMPORTANT (trying to solve predicate problem)
+			      /*for (int u = 0; u<allRelationships.size()-1; u++){
+				 cout<<endl<<"count:"<<count<<"element:"<<allRelationships[u][a][0]<<endl;
+				 //if (relations==allRelationships
+				 relations.insert(it,allRelationships[u][a][0]);
+				 //relations.push_back(allRelationships[u][a][0]);
+			         count++;
+			      }*/
+
+			      //cout<<"out of loop"<<endl;
 			      flag = true;
 			      print = true;
+			      print1 = true;
 			   }
 			   if (print) { 
-			      cout<<"how many times"<<endl;
-			   //if (print) cout
+			      count++;
+			      //cout<<"how many times"<<endl;
 			      result.push_back(relations);
 			      string key = "";
 			      for(auto it2 = relations.begin(); it2!=relations.end(); it2++){
           		         key = key + " " + *it2;
          		      }
-			      result2.insert({key,relations});
+			      mapResult.insert({key,relations});
 			   }
+			   relations.clear();
 			   print = false;
 			}
+			//cout<<endl<<"1"<<endl;
+			//if (print1) bigResult.push_back(result);
+			//print1 = false;
 			//if (flag) break;  
 		     }
+		     cout<<endl<<"LOOP VARS"<<endl;
+		     cout<<"i:"<<i<<" j:"<<j<<" k:"<<k<<" z:"<<z<<" h:"<<h<<" count:"<<count<<endl;//<<" a:"<<a<<" b:"<<b<<endl;
+		     cout<<"LOOP VARS DONEZO"<<endl;
+		     
+		     //auto it3=result2.end();
+		     //auto it4=it3->second;
+		     //result=mapToVector2(result2);
+		     //bigResult.push_back(result);
+		     for(int co=0;co<(count)&&i!=0;co++){
+		        //cout<<"COUNT:"<<count<<endl;
+			cout<<"K:"<<k<<endl;
+			cout<<"VEC TO BE ERASED"<<endl;
+			printSomething1D(*(result.begin()),0);
+			cout<<"DONE VEC ERASE"<<endl;
+			result.erase(result.begin());
+		        //cout<<"AM I HERE?"<<endl;
+		     }
+		     //result=mapToVector2(mapResult);
+		     if (!first) {
+			for (int co2=0; co2<(h*count); co2++){
+			   cout<<"VEC TO BE ERASED"<<endl;
+			   printSomething1D(*(result.begin()),0);
+			   cout<<"DONE VEC ERASE"<<endl;
+			   result.erase(result.begin());
+			}
+		     }
+		     //for (int co2=0; co2<h; co++){
+		     bigResult.push_back(result);
+		     //}
+		     //cout<<"What about here??"<<endl;
+		     /*string key = "";
+		     for (int ab = 0; ab<bigResult.size(); ab++){
+			for (int bc = 0; bc<bigResult[a][b].size(); bc++) {
+			   key = key + " " + *it3
+			}
+			bigResult2.insert({key,
+		     }*/
+		     //cout<<endl<<"2"<<endl;
 		     //if (flag) break;
 		  }
+		  //cout<<endl<<"3"<<endl;
 		  //if (flag) break;
+		  //bigResult.push_back(result);
 	       }
+	       //cout<<endl<<"4"<<endl;
 	       //if (flag) break;
 
 	    }
+	    //cout<<endl<<"5"<<endl;
             //OLD adds everything
             //cout<<endl<<"adding "<<allRelationships[i][j][k]<<endl;
 	    //relations.push_back(allRelationships[i][j][k]);
           
 	 }
-	 //if (flag) break;
-	 /*
+	 //bigResult.push_back(result);
+	 if (flag) break;
+	 
 	 cout<<"HERE"<<endl;
-         //result.push_back(relations);
+         /*result.push_back(relations);
          string key = "";
          for(auto it = relations.begin(); it!=relations.end(); it++){
             key = key + " " + *it;
@@ -585,89 +706,185 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
 	 cout<<"Here 6"<<endl;*/
          
       }
+      //bigResult.push_back(result);
       //if (flag) break;
       //cout<<"Here 5"<<endl;
    }
    //cout<<"Here 3"<<endl;
+   //result = mapToVector(result2);
    /*for (int i = 0; i<inferParamNames.size(); i++){
       string curArg=inferParamNames[i];
       if (curArg.at(0)!='$') {
         string n = inferParamNames[i];
-        result2 = searchResults(n,result2,i);
+        for (int j=0; j<result.size(); j++) {
+	   vector<string> vars = result.size(
+	result2 = searchResults(n,result2,i);
       }
    }*/
    //string s = newfactname;
    //if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
-   /*cout<<endl<<"result2"<<endl;
-   printMap(result2);
-   cout<<endl<<"result"<<endl;
-   printSomething(result, 0);
-   cout<<endl<<endl;*/
+   cout<<endl<<"mapResult"<<endl;
+   printMap2(mapResult);
+   cout<<endl<<endl;
    //result = mapToVector(result2);
-   cout<<endl<<"And result"<<endl;
-   printMap(result2);
-   cout<<endl<<"And result above"<<endl;
-   result = mapToVector(result2);
-   return result;
-}
-
-
-
-vector<vector<string>> parse::doAND0(vector<vector<vector<string>>> allRelationships, rule p_rule, int count) {
-   cout<<"Doing AND2 operation"<<endl;
-   //cout << p_rule.logOperator<<endl;
-   //cout << count <<endl;
-
-   cout<<endl<<"or passed vector"<<endl;
-   printSomething3D(allRelationships,0);
-   cout<<endl<<"done"<<endl;
-
-   vector<vector<string>> result;
-   result.clear();
-   unordered_map<string, vector<string>> result2;
-   for (auto i = 0; i < allRelationships.size(); i++){
-      int c = allRelationships[i].size();
-      for (auto j = 0; j < allRelationships[i].size(); j++){
-         vector<string>vars = allRelationships[i][allRelationships[i].size()-1];
-         c--;
-         vector<string> relations;
-         int m = 0;
-         for (auto k = 0; k<allRelationships[i][j].size(); k++) {
-            for (auto m = 0; m<p_rule.args.size(); m++) {
-               if (vars[k]==p_rule.args[m]) relations.push_back(allRelationships[i][j][m]);
-            }
-         }
-         //result.push_back(relations);
-         string key = "";
-         for(auto it = relations.begin(); it!=relations.end(); it++){
-            key = key + " " + *it;
-         }
-         //cout << "Key at 0: " << key <<endl;
-         if (key.at(1)!='$'){
-            result.push_back(relations);
-            result2.insert({key, relations});
-         }
-      }
+   
+   // PRINTS MAP
+   //cout<<endl<<"And map result below";
+   //printMap(result2);
+   //cout<<endl<<"And map result above"<<endl<<endl;
+   
+   //result = mapToVector(result2);
+   
+   
+   cout<<endl<<"bigResult pre"<<endl;
+   printSomething3D(bigResult,0);
+   cout<<endl<<endl<<endl;
+   vector<vector<string>> finalResult=bigResult[0];
+   //result=bigResult[0];
+   //IMPORTANT FOR MULTIPLE PREDICATES
+   
+   cout<<endl<<"finalResult pre"<<endl;
+   printSomething(finalResult,0);
+   cout<<endl<<endl<<endl;   
+   
+   
+   if (predicates>2) {
+      predicates--;
+      //cout<<endl<<"BigResult"<<endl;
+      //printSomething3D(bigResult,0);
+      //cout<<endl<<endl<<endl;
+      //bigResult=
+      finalResult=doAND(bigResult,p_rule,0,false);
    }
-   for (int i = 0; i<inferParamNames.size(); i++){
-      string curArg=inferParamNames[i];
-      if (curArg.at(0)!='$') {
+
+   cout<<endl<<"bigResult post"<<endl;
+   printSomething3D(bigResult,0);
+   cout<<endl<<endl<<endl;
+
+   cout<<endl<<"finalResult post"<<endl;
+   printSomething(finalResult,0);
+   cout<<endl<<endl<<endl;
+   
+   vector<vector<string>> rmNonVars;
+   rmNonVars=getSolutionAND(finalResult,p_rule);
+   //fuck=doOR(bigResult,p_rule,0);
+   //result=doOR(bigResult,p_rule,0);
+   /*vector<vector<string>> finalResult;
+   for (int i = 0; i<p_rule.predicates.size(); i++){
+      string curArg=p_rule.predicates[i];
+      for (int a=0; a<result.size(); a++) {
+	 vector<vector<string>> miniFinalResult;
+	 for (int b=0; b<result[i].size(); b++) {
+	    if (curArg==result[a][b]) {
+	       // loop through columns above found
+	       //for (int c=0; c<
+	       miniFinalResult.push_back(result[a][b]);
+    */
+	        
+      /*if (curArg.at(0)!='$') {
         string n = inferParamNames[i];
+        for (int j=0; j<result.size(); j++) {
+           vector<string> vars = result.size(
         result2 = searchResults(n,result2,i);
       }
-   }
-   string s = newfactname;
-   if (newfactname != "") {cout<<"right"<<endl; addFacts(result2, newfactname);}
-   /*cout<<endl<<"or result2"<<endl;
-   printMap(result2);
-   cout<<endl<<"or result"<<endl;
-   printSomething(result, 0);
-   cout<<endl<<endl;*/
-   result = mapToVector(result2);
-   return result;
+   }*/
+
+   cout<<"rmNonVars"<<endl;
+   printSomething(rmNonVars,0);
+   cout<<endl;
+
+   //result=getSolutionAND(finalResult, p_rule);
+
+   //cout<<"
+
+   return rmNonVars;
 }
 
+vector<vector<string>> parse::getSolutionAND(vector<vector<string>> result, rule p_rule){
+   vector<vector<string>> finalResult;
+   vector<vector<string>> actualFinalResult;
+   vector<string> push;
+   vector<string> push2;
+   vector<string> vars;
+   //bool print=false;
+   vars = result[result.size()-1];
+   for (int p=0; p<p_rule.args.size(); p++) {
+      for (int v=0; v<vars.size(); v++) {
+	 bool print =false;
+	 if (p_rule.args[p]==vars[v]){
+	    for (int r=0; r<result.size(); r++){
+	       push.push_back(result[r][v]);
+	    }
+	    print=true;
+	 }
+	 if (print) finalResult.push_back(push);
+         push.clear();
+      }
+   }
 
+   for (int c=0; c<finalResult[0].size(); c++) {
+      for (int r=0; r<finalResult.size(); r++) {
+	 push2.push_back(finalResult[r][c]);
+      }
+      actualFinalResult.push_back(push2);
+      push2.clear();
+   }
+   
+
+   return actualFinalResult;
+}
+
+//vector<vector<string>> parse::vectorSwapDimensions(vector<vector<string>> result) {
+   
+
+//}
+
+   
+   /*for(int i=0; i<result.size(); i++){
+      vars = result[result.size()-1];
+      for(int k=0; k<p_rule.args.size(); k++){
+	 for(int j=0; j<result[i].size(); j++){
+	    if (p_rule.args[k]==vars[j]) {
+	       for (int a=0; a<result.size(); a++){
+	          if (result[a][j].at(0) != '$')
+		  push.push_back(result[a][j]);
+	       }
+	       cout<<"Push Vector"<<endl;
+	       printSomething1D(push,0);
+	       flag=true;
+	    }
+	    if (flag) break;
+	 }
+         finalResult.push_back(push);
+      }
+   }
+   return finalResult;
+   */
+
+  /*
+   vars = result[result.size()-1];
+   // loop through predicates
+   for (int k=0; k<p_rule.args.size(); k++){
+      // loop through rows of vectors
+      for (int h=0; h<result.size(); h++){
+         // if a current arg in the rule does equal a var in the vector
+	 if (p_rule.args[k]==vars[h])
+	    //((p_rule.args[k]!=vars[h])&&(p_rule.args[k+1]!=vars[h])&&(p_rule.args[k+1]!=vars[h])){
+            cout<<"var "<<vars[h]<<" found"<<endl;
+            //for (auto it=
+            for (int a=0; a<result.size(); a++) {
+               //cout<<"ERASE->>>>"<<*(result[a].begin()+h);
+               vector[a].
+	       result[a].erase(result[a].begin()+h);
+	       //result[a].size()=(result[a].size())-1;
+            }
+	    break;
+         }
+      }
+   }
+   return result;
+
+}*/
 
 void parse::printSomething1D(vector<string> oneRelation, int count) {
    for (auto it1 = oneRelation.begin(); it1 != oneRelation.end(); it1++){
@@ -684,6 +901,7 @@ void parse::printSomething(vector<vector<string>> relations, int count) {
 
 void parse::printSomething3D(vector<vector<vector<string>>> allRelations, int count) {
    for (auto it1 = allRelations.begin(); it1 != allRelations.end(); it1++){
+      cout<<"new 2d vector"<<endl;
       printSomething(*it1, count);
    }
 }
@@ -732,7 +950,7 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
-  p.load("loadinput2.sri");
+  p.load("loadin2.sri");
   while(getline(cin,input)&&input!="-1"){
      p.checkLine(input);
   }
