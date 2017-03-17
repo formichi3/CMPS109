@@ -56,7 +56,7 @@ class parse{
                                  vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
   vector<vector<string>> doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
-  unordered_map<string,vector<string>> vector3DToMap(vector<vector<vector<string>>> vec);
+  unordered_map<string,vector<string>> vector3DToMap(vector<vector<vector<string>>> vec, bool nAND);
   vector<vector<string>> mapToVector(unordered_map <string,vector<string>> relations);
   vector<vector<string>> mapToVector2(map <string,vector<string>> relations);
   vector<vector<string>> doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count, bool first);

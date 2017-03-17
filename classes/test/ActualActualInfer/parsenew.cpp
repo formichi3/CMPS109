@@ -178,6 +178,7 @@ void parse::load(string input){//working, opens file and reads it line by line
     cout<<endl<<line<<endl; // Process str
     checkLine(line);
   }
+  cout<<endl;
 }//end of load parsing
 
 void parse::infer(string input){      //working
@@ -236,12 +237,16 @@ void parse::infer(string input){      //working
   vector<vector<vector<string>>> bigAnswer;
   vector<vector<vector<string>>> big;
   unordered_map<string, vector<string>> mapResult;
+  bool isRule = true;
+  bool isAND = false;
   // if query is a fact...
   if (curKB.hash.find(query) != curKB.hash.end()) {
      answer=inferFact(query,newfactname,true);
      bigAnswer.push_back(answer);
      //printSomething(answer,0);
      answer.clear();
+     isRule=false;
+     //isAND=false;
   }
   // if query is a rule...
   else if (curRB.hash.find(query) != curRB.hash.end()) {
@@ -256,6 +261,7 @@ void parse::infer(string input){      //working
       answer = inferRule(*it,newfactname, big, count);
       bigAnswer.push_back(answer);
       answer.clear();
+      if (it->logOperator==1) isAND = true;
       //printSomething(answer,0);
       //big.clear();
     }
@@ -264,7 +270,7 @@ void parse::infer(string input){      //working
   } else { 
      cout<<query<<" is not a fact or rule."<<endl; 
   }
-  mapResult=vector3DToMap(bigAnswer);
+  mapResult=vector3DToMap(bigAnswer,isAND);
   
   /*cout<<"PRE VEC"<<endl;
   printSomething3D(bigAnswer,0);
@@ -284,7 +290,7 @@ void parse::infer(string input){      //working
       }
   }
   
-  cout<<"POST MAP"<<endl;
+  cout<<"ANSWER BELOW";
   printMap(mapResult);
 
   // BUGGY
@@ -297,6 +303,7 @@ void parse::infer(string input){      //working
   //printSomething3D(bigAnswer,0);
   bigAnswer.clear();
   mapResult.clear();
+  cout<<endl;
 }
 
 
@@ -392,17 +399,18 @@ vector<vector<string>> parse::inferRule(rule p_rule,string newfactname,
   }
   //cout <<"print 3d vector recursion "<<count<<endl;
   vector<vector<string>> printRelationships;
+  printRelationships.clear();
   if (operand==0) {
      // allRelationships.clear();
      printRelationships=(doOR(allRelationships, p_rule, count));
   } else {
      printRelationships=(doAND(allRelationships, p_rule, count,true));  //printSomething3D(allRelationships, count);
   }
-  /*cout<<endl<<"ALL RELATIONSHIPS"<<endl;
-  printSomething3D(allRelationships, 0);
-  cout<<endl<<"PRINT RELATIONSHIPS"<<endl;
+  //cout<<endl<<"ALL RELATIONSHIPS"<<endl;
+  //printSomething3D(allRelationships, 0);
+  /*cout<<endl<<"PRINT RELATIONSHIPS"<<endl;
   printSomething(printRelationships, 0);
-  */
+  cout<<"Done"<<endl;*/
   return printRelationships;
 }
 
@@ -504,6 +512,7 @@ vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationshi
 	 }
       }
    }
+
    //OLD TARGET FACT CODE
    /*for (int i = 0; i<inferParamNames.size(); i++){
       string curArg=inferParamNames[i];
@@ -524,8 +533,11 @@ vector<vector<string>> parse::doOR(vector<vector<vector<string>>> allRelationshi
    return result;
 }
 
-unordered_map<string,vector<string>> parse::vector3DToMap(vector<vector<vector<string>>> vec) {
+unordered_map<string,vector<string>> parse::vector3DToMap(vector<vector<vector<string>>> vec, bool AND) {
    unordered_map<string,vector<string>> u_map;
+   /*cout<<"vec to map"<<endl;
+   printSomething3D(vec,0);
+   cout<<"done"<<endl;*/
    //cout<<"sizes:"<<vec.size()<<vec[0].size()<<endl;
    for (int i=0; i<vec.size(); i++){
       for (int j=0; j<vec[i].size(); j++){
@@ -539,7 +551,14 @@ unordered_map<string,vector<string>> parse::vector3DToMap(vector<vector<vector<s
 	 //cout<<"-----------"<<endl;
 	 //if (vec[i][j]!=vec[i][vec[i].size()-1]) printSomething1D(vec[i][j],0);
 	 //cout<<"-----------"<<endl;
-	 if (vec[i][j]!=vec[i][vec[i].size()-1]) u_map.insert({key, vec[i][j]});
+	 /*if (!nAND) {
+	    if ((vec[i][j]!=vec[i][vec[i].size()-1])) u_map.insert({key, vec[i][j]});
+         } else {
+	    u_map.insert({key, vec[i][j]});
+	 }*/
+	 u_map.insert({key, vec[i][j]});
+	 //if (!AND) u_map.insert({key, vec[i][j]});
+	 //else if ((vec[i][j]!=vec[i][vec[i].size()-1])) u_map.insert({key, vec[i][j]});
       }
    }
    
@@ -613,9 +632,11 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
    cout<<"Doing AND operation"<<endl;
    //cout << p_rule.logOperator<<endl;
    //cout << count <<endl;
-   /*cout<<endl<<"passed vector"<<endl;
+   /*
+   cout<<endl<<"passed vector"<<endl;
    printSomething3D(allRelationships,0);
-   cout<<endl<<endl;*/
+   cout<<endl<<endl;
+   */
    vector<vector<string>> ans;
    vector<vector<string>> result;
    vector<vector<vector<string>>> bigResult;
@@ -761,6 +782,7 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
 			//printSomething1D(*(result.begin()),0);
 			//cout<<"DONE VEC ERASE"<<endl;
 			result.erase(result.begin());
+			result.shrink_to_fit();
 		        //cout<<"AM I HERE?"<<endl;
 		     }
 		     //result=mapToVector2(mapResult);
@@ -770,10 +792,13 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
 			   //printSomething1D(*(result.begin()),0);
 			   //cout<<"DONE VEC ERASE"<<endl;
 			   result.erase(result.begin());
+			   result.shrink_to_fit();
 			}
 		     }
+		     result.shrink_to_fit();
 		     //for (int co2=0; co2<h; co++){
 		     bigResult.push_back(result);
+		     bigResult.shrink_to_fit();
 		     //}
 		     //cout<<"What about here??"<<endl;
 		     /*string key = "";
@@ -876,6 +901,7 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
       //cout<<endl<<endl<<endl;
       //bigResult=
       finalResult=doAND(bigResult,p_rule,0,false);
+      finalResult.shrink_to_fit();
       //rmNonVars=
    }
    
@@ -891,7 +917,7 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
 
    vector<vector<string>> rmNonVars;
    rmNonVars=getSolutionAND(finalResult,p_rule);
-   
+   rmNonVars.shrink_to_fit();
    //fuck=doOR(bigResult,p_rule,0);
    //result=doOR(bigResult,p_rule,0);
    /*vector<vector<string>> finalResult;
@@ -917,17 +943,24 @@ vector<vector<string>> parse::doAND(vector<vector<vector<string>>> allRelationsh
    /*
    cout<<"rmNonVars"<<endl;
    printSomething(rmNonVars,0);
-   cout<<endl;
+   cout<<"done"<<endl;
  
-   cout<<"actualFinalResult"<<endl;
-   printSomething(rmNonVars,0);
-   cout<<endl;
+   cout<<"finalResult"<<endl;
+   printSomething(finalResult,0);
+   cout<<"done"<<endl;
    */
 
    //vector<vector<string>> ans;
-   if (first) ans = rmNonVars;
-   else	      ans = finalResult;
-   
+   if (first) {
+      rmNonVars.pop_back();
+      ans = rmNonVars; 
+      //rmNonVars.pop_back();
+      /*cout<<"rmNonVars"<<endl;
+      printSomething(rmNonVars,0);
+      cout<<"done"<<endl;*/
+   } else {
+      ans = finalResult;
+   }
    return ans;
 }
 
