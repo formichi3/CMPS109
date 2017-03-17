@@ -362,8 +362,17 @@ vector<vector<string>> parse::inferRule(rule p_rule,string newfactname,
      printSomething3D(allRelationships,0);
      cout<<endl<<"DONE"<<endl;
      */
-     vector<vector<string>> returned = (inferRule(newRule,newfactname,temp/*allRelationships*/, count));
-     //allRelationships.push_back(inferRule(newRule,newfactname,allRelationships, count));
+     vector<vector<string>> returned;
+     //----------------------------                             
+     int threadNum=ORThreads.size()+1;
+     auto ruleThread = async(bind(&parse::inferRule, this, newRule, newfactname, temp, count));
+     cout << "Thread number "<<threadNum<<" created for "<<newRule.name<<endl;
+     shared_future < vector < vector <string> > > outThreads = ruleThread.share();
+     ORThreads.push_back(outThreads);
+     returned = ORThreads[ORThreads.size()-1].get();
+     cout << "Thread "<<threadNum<<  " is finished with "<<newRule.name<<endl;
+     //---------------------------- 
+
      allRelationships.push_back(returned);
 
      /*cout<<endl<<"allR in recursion"<<endl;
