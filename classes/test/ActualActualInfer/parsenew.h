@@ -56,6 +56,7 @@ class parse{
                                  vector<vector<vector<string>>> allRelationships, int count);
      // recursive helper function for infer
   vector<vector<string>> doOR(vector<vector<vector<string>>> allRelationships, rule p_rule, int count);
+  unordered_map<string,vector<string>> vector3DToMap(vector<vector<vector<string>>> vec);
   vector<vector<string>> mapToVector(unordered_map <string,vector<string>> relations);
   vector<vector<string>> mapToVector2(map <string,vector<string>> relations);
   vector<vector<string>> doAND(vector<vector<vector<string>>> allRelationships, rule p_rule, int count, bool first);
@@ -64,8 +65,10 @@ class parse{
   void printSomething1D(vector<string> oneRelation, int count);
   void printSomething(vector<vector<string>> relations, int count);
   void printSomething3D(vector<vector<vector<string>>> allRelations, int count);
+  //vector<vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position);
+  //unordered_map<string, vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position);
   unordered_map<string, vector<string>> searchResults(string searchName, unordered_map<string, vector<string>> searchMap, int position);
-  vector<string> searchResultsVector(string searchName, vector<vector<string>> searchVector, int position);
+  //vector<string> searchResultsVector(string searchName, vector<vector<string>> searchVector, int position);
   void printMap(unordered_map<string,vector<string>> result2);
   void printMap2(map<string, vector<string>> result2);
   void addFacts(unordered_map<string, vector <string>> facts, string factName);
