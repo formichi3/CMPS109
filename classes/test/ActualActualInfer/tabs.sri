@@ -1,0 +1,12 @@
+FACT Child(Patrick,Bill)
+FACT Child(Alex,Susie)
+FACT Mother(Margret,Bob)
+FACT Mother(Margret,Robert)
+FACT Mother(Marry,Albert)
+FACT Mother(Marry,John)
+FACT Father(Allen,Margret)
+
+RULE GrandMother($X,$Y):- AND Mother($X,$Z) Father($Z,$Y)
+RULE GrandMother($X,$Y):- AND Mother($X,$Z) Mother($Z,$Y)
+RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)
+RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y) Child($Y,$X)

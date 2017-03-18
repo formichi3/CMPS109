@@ -17,12 +17,20 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include <future>
+#include <thread>
+#include <functional>
+
+
 
 using namespace std;
 class parse{
 
  private:
   int inputSize;
+  vector< shared_future <string> > predThreads;
+  vector< shared_future < vector < vector <string> > > > ORThreads;//vector of OR threads
+
  public:
   // vars
   int predicates;

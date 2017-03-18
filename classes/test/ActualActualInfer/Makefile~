@@ -1,0 +1,5 @@
+make:
+	clang++ -std=c++11 *.cpp
+	#clang++ -std=c++11 -stdlib=libc++ *.h *.cpp
+	#clang++ -std=c++11 *.h *.cpp	
+	./a.out
