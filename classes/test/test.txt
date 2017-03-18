@@ -1,0 +1,7 @@
+RULE father(1,22,333) OR sister(12,34,56,7) brother(gg,rr,yy,tt)
+DROP girlfriend
+FACT school(mon,tues,fri)
+FACT time(hours, min, sec)
+DROP time
+INFERENCE greatgrandfather(x,y,z) ggf
+

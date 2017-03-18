@@ -1,0 +1,7 @@
+FACT Father(Roger,John)
+FACT Mother(Marry,John)
+FACT Father(Roger,Albert)
+FACT Mother(Marry,Albert)
+FACT Father(Allen,Margret)
+FACT Mother(Margret,Robert)
+FACT Mother(Margret,Bob)
