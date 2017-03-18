@@ -281,6 +281,7 @@ void parse::infer(string input){      //working
   
   unordered_map<string, vector<string>> fin;
   // for specified names
+  if (isRule) {
   for (int sub = 0; sub<inferParamNames.size(); sub++){
       string curArg=inferParamNames[sub];
       if (curArg.at(0)!='$') {
@@ -288,6 +289,7 @@ void parse::infer(string input){      //working
 	string n = inferParamNames[sub];
         mapResult = searchResults(n,mapResult,sub);
       }
+  }
   }
   
   cout<<"ANSWER BELOW";
@@ -362,8 +364,17 @@ vector<vector<string>> parse::inferRule(rule p_rule,string newfactname,
      printSomething3D(allRelationships,0);
      cout<<endl<<"DONE"<<endl;
      */
-     vector<vector<string>> returned = (inferRule(newRule,newfactname,temp/*allRelationships*/, count));
-     //allRelationships.push_back(inferRule(newRule,newfactname,allRelationships, count));
+     vector<vector<string>> returned;
+     //----------------------------                             
+     int threadNum=ORThreads.size()+1;
+     auto ruleThread = async(bind(&parse::inferRule, this, newRule, newfactname, temp, count));
+     cout << "Thread number "<<threadNum<<" created for "<<newRule.name<<endl;
+     shared_future < vector < vector <string> > > outThreads = ruleThread.share();
+     ORThreads.push_back(outThreads);
+     returned = ORThreads[ORThreads.size()-1].get();
+     cout << "Thread "<<threadNum<<  " is finished with "<<newRule.name<<endl;
+     //---------------------------- 
+
      allRelationships.push_back(returned);
 
      /*cout<<endl<<"allR in recursion"<<endl;
@@ -1134,7 +1145,7 @@ int main(){
   parse p;
   cout<< "enter a command...-1 to exit"<<endl;
   string input;
-  p.load("loadin2.sri");
+  p.load("loadtest.sri");
   while(getline(cin,input)&&input!="-1"){
      p.checkLine(input);
   }

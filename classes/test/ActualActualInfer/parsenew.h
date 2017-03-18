@@ -28,6 +28,7 @@ class parse{
 
  private:
   int inputSize;
+  vector< shared_future <string> > predThreads;
   vector< shared_future < vector < vector <string> > > > ORThreads;//vector of OR threads
 
  public:
