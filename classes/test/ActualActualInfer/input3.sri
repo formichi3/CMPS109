@@ -1,4 +1,0 @@
-rule Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
-rule GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)
-rule GrandMother($X,$Y):- AND Mother($X,$Z) Mother($Z,$Y)
-rule GrandMother($X,$Y):- AND Mother($X,$Z) Father($Z,$Y)
