@@ -1,0 +1,13 @@
+FACT Mother(Marry,John)
+FACT Mother(Marry,Albert)
+FACT Mother(Margret,Robert)
+FACT Mother(Margret,Bob)
+FACT Child(Billy,Aaron)
+FACT Child(Adam,Steve)
+
+RULE GrandMother($X,$Y):- AND Mother($X,$Z) Mother($Z,$Y)
+RULE GrandMother($X,$Y):- AND Mother($X,$Z) Father($Z,$Y)
+RULE Test($X,$Y):- OR Parent($Y,$X) Child($Y,$X)
+RULE allParent($X,$Y):- OR Parent($X,$Y) Child($Y,$X)
+RULE Parent($X,$Y):- OR Father($X,$Y) Mother($X,$Y)
+RULE GrandFather($X,$Y):- AND Father($X,$Z) Parent($Z,$Y)
