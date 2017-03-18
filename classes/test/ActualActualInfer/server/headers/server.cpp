@@ -30,17 +30,22 @@ static void runSocketThread(TCPServerSocket* server, TCPSocket* socket, int thre
       delete(socket);
       cout << message << ": socket connection closed\nListening on port 8080..." << endl;
     }
-    else {cout << "MESSAGE RECIEVED: " << message << endl;}
+    else {cout << "COMMAND RECIEVED: " << message << endl;}
     result = p.checkLine(message);
+    string line = "";
+    string body = "";
     for (auto it = result.begin(); it != result.end(); it++){
+      line = "";
       for (auto it2 = it->begin(); it2 != it->end(); it2++){
-        message = *it2;
-        strcpy(backToClient, message.c_str());
-        cout << *it2 << endl;
-        cout << "BYTES WRITTEN TO CLIENT: " << socket->writeToSocket(backToClient, bufferSize);
-      }
-      //out << endl;
+        line += *it2 + " ";
     }
+    // cout << "LINE1" << line << endl;
+    body += line + "\n";
+    // cout << "BODY" << body << endl;
+
+  }
+  strcpy(backToClient, body.c_str());
+  socket->writeToSocket(backToClient, bufferSize);
   }
   else {cout << "Connection Lost on client " << threadNum << endl;break;};
   }

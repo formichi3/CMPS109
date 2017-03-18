@@ -20,7 +20,6 @@ static void listen(int sock){
 
 int main(int argc,char ** argv){
   int sock;
-  char receiveBuf[1024];
   struct sockaddr_in serverAddr;
   socklen_t sin_size = sizeof(struct sockaddr_in);
 
@@ -40,17 +39,11 @@ int main(int argc,char ** argv){
     // try to connect to the server and exit with an error message if failed
     if (connect(sock,(sockaddr *)&serverAddr,sizeof(serverAddr)) < 0 ) cout << "Error2";
     else{
-      thread t2(listen, sock);
+      //thread t2(listen, sock);
       //t2.join();
       cout << "connected to server!\nPlease enter command: " << endl;
       //send (sock,"Hello CMPS 109\n",strlen("Hello CMPS 109"),0);
       while(true){
-        // memset (receiveBuf,0,1024); // initialize buffer
-        // int read = recv (sock,receiveBuf,1024,0); // invoke recv system call
-        // for (int i = 0; i < strlen(receiveBuf); i++){
-        //   cout << receiveBuf[i];
-        // }
-        // cout << endl;
         cout << "Enter a command:" << endl;
         char message[1024];
         string input;
@@ -61,8 +54,16 @@ int main(int argc,char ** argv){
           cout << "Goodbye!\n";
           return 0;
         }
-        cout <<  "SUBSTRING" << input.substr(0,5);
         if (input.substr(0,5) == "infer" || input.substr(0,5) == "infer"){
+          char * buffer = new char[1024];
+          if ( buffer != NULL ) {
+            memset (buffer,0,1024); // initialize buffer
+            int read = recv (sock,buffer,1024,0); // invoke recv system call
+            for (int i = 0; i < strlen(buffer); i++){
+              cout << buffer[i];
+            }
+            cout << endl;
+          }
         }
       }
     }
