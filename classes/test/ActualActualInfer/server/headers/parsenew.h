@@ -43,7 +43,7 @@ class parse{
   vector <string> inferParamNames;
      // stores the param names that are called with infer
   // functions
-  void checkLine(string x);
+  vector<vector<string>> checkLine(string x);
      // checks line input
   void addRule(string x);
      // adds a rule to curRB
@@ -53,7 +53,7 @@ class parse{
      // loads a file
   void dump(string x);
      // dumps the contents of curRB and curKB into a file
-  void infer(string x);
+  vector<vector<string>> infer(string x);
      // infer prints all facts upon which a rule infers upon
      // about 50% complete
   void drop(string x);

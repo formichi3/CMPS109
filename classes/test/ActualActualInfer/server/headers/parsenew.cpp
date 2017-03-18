@@ -6,8 +6,9 @@
 using namespace std;
 
 
-void parse::checkLine(string input){
+vector<vector<string>> parse::checkLine(string input){
   inputSize=input.size();
+  vector<vector<string>> send;
   //cout<<"Enter a command"<<endl;
   string command = input.substr(0,4);//sets string equal to first 4 letters
   //  input.erase(remove(input.begin(),input.end(), '\t'), input.end());//removes tabs characters...doesn't work
@@ -19,8 +20,9 @@ void parse::checkLine(string input){
   else if(command=="DUMP"||command=="dump")dump(input2);//parse durable
   else if(command=="LOAD"||command=="load")load(input2);//parse durable, weak at calling from main
   else if(command=="DROP"||command=="drop")drop(input2);//parse durable
-  else if(command=="INFE"||command=="infe")infer(input);//parse needs work
+  else if(command=="INFE"||command=="infe")send=infer(input);//parse needs work
   else cout<<"please enter valid command"<<endl;
+ return send;  
 }
 
 void parse::addRule(string input){//working
@@ -181,7 +183,7 @@ void parse::load(string input){//working, opens file and reads it line by line
   cout<<endl;
 }//end of load parsing
 
-void parse::infer(string input){      //working
+vector<vector<string>> parse::infer(string input){      //working
   int inferSpace = input.find(" " , 0);
   int end1 = input.find("(" , 0);
   int money = input.find("$", 0);
@@ -302,11 +304,13 @@ void parse::infer(string input){      //working
      cout<<"Creating facts with the name: "<<newfactname<<endl;
      addFacts(mapResult, newfactname);
   }
-
+  vector<vector<string>> send;
+  send=mapToVector(mapResult);
   //printSomething3D(bigAnswer,0);
   bigAnswer.clear();
   mapResult.clear();
   cout<<endl;
+  return send;
 }
 
 

@@ -37,7 +37,7 @@
 #include <ctype.h>
 #include <dirent.h>
 //#include <mysql.h>
-#include <mysql/mysql.h>
+//#include <mysql/mysql.h>
 #include<netdb.h>
 #include<netinet/udp.h>
 #include<netinet/tcp.h>
